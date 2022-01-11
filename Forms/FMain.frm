@@ -5,6 +5,7 @@ Begin VB.Form FMain
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   4560
+   Icon            =   "FMain.frx":0000
    LinkTopic       =   "FMain"
    ScaleHeight     =   3015
    ScaleWidth      =   4560
@@ -53,3 +54,6 @@ Private Sub BtnTestArrayPointer_Click()
     Form3.Show vbModal, Me
 End Sub
 
+Private Sub Form_Load()
+    Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
+End Sub

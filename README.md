@@ -9,4 +9,4 @@
 Project started around mid 2006.   
 
 
-![Pointers Image](Resources/Pointers.png "Pointers Image")
+![VBPointers Image](Resources/VBPointers.png "VBPointers Image")
