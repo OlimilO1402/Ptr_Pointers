@@ -14,8 +14,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 'nur eine Dummy-Klasse
-Public DblVal As Double
+Public Value As Double
 
-Public Function ToString()
-  ToString = CStr(DblVal)
+Public Function ToStr()
+    ToStr = CStr(Value)
 End Function

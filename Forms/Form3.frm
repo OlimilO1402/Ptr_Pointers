@@ -1,11 +1,11 @@
 VERSION 5.00
-Begin VB.Form Form1 
-   Caption         =   "Form1"
+Begin VB.Form Form3 
+   Caption         =   "Form3"
    ClientHeight    =   3090
    ClientLeft      =   60
    ClientTop       =   450
    ClientWidth     =   4680
-   LinkTopic       =   "Form1"
+   LinkTopic       =   "Form3"
    ScaleHeight     =   3090
    ScaleWidth      =   4680
    StartUpPosition =   3  'Windows-Standard
@@ -42,7 +42,7 @@ Begin VB.Form Form1
       Width           =   1695
    End
 End
-Attribute VB_Name = "Form1"
+Attribute VB_Name = "Form3"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
@@ -131,11 +131,9 @@ Private Sub TestUDTypeArray()
     'der Zeiger wird von udtArr1 ausgelesen und in udtArr2 hineinkopiert,
     'das manipulierte Array ist udtArr2
     SAPtr(ArrPtr(udtArr2)) = SAPtr(ArrPtr(udtArr1))
-    MsgBox TAnyTypeToString(udtArr1(0)) & vbCrLf & _
-           TAnyTypeToString(udtArr1(1))
-    MsgBox TAnyTypeToString(udtArr2(0)) & vbCrLf & _
-           TAnyTypeToString(udtArr2(1))
-           
+    MsgBox TAnyTypeToStr(udtArr1(0)) & vbCrLf & TAnyTypeToStr(udtArr1(1))
+    MsgBox TAnyTypeToStr(udtArr2(0)) & vbCrLf & TAnyTypeToStr(udtArr2(1))
+    
     'Achtung Wichtig:
     'den Zeiger des Manipulierten Arrays wieder Nullen, sonst gibt es
     'einen Absturz der IDE und des Programmes, beim Versuch von VB
@@ -145,29 +143,29 @@ Private Sub TestUDTypeArray()
     Call ZeroSAPtr(ArrPtr(udtArr2))
 End Sub
 
-Private Function TAnyTypeToString(A As TAnyType) As String
+Private Function TAnyTypeToStr(A As TAnyType) As String
     Dim m As String
     m = m & CStr(A.XVar) & vbCrLf
     m = m & CStr(A.YVar) & vbCrLf
     m = m & CStr(A.ZVar) & vbCrLf
     m = m & A.SVar & vbCrLf
-    TAnyTypeToString = m
+    TAnyTypeToStr = m
 End Function
 
 Private Sub TestObjectArray()
-    Dim objArr1() As Class1
-    Dim objArr2() As Class1
-    ReDim objArr1(0 To 1)
+    ReDim objArr1(0 To 1) As Class1
     Set objArr1(0) = New_Class1(123456789.123456)
     Set objArr1(1) = New_Class1(987654321.987654)
     
     'der Zeiger wird von objArr1 ausgelesen und in objArr2 hineinkopiert,
     'das manipulierte Array ist objArr2
+    
+    Dim objArr2() As Class1
     SAPtr(ArrPtr(objArr2)) = SAPtr(ArrPtr(objArr1))
-    MsgBox objArr1(0).ToString & vbCrLf & _
-           objArr1(1).ToString
-    MsgBox objArr2(0).ToString & vbCrLf & _
-           objArr2(1).ToString
+    MsgBox objArr1(0).ToStr & vbCrLf & _
+           objArr1(1).ToStr
+    MsgBox objArr2(0).ToStr & vbCrLf & _
+           objArr2(1).ToStr
            
     'Achtung Wichtig:
     'den Zeiger des Manipulierten Arrays wieder Nullen, sonst gibt es
@@ -178,3 +176,7 @@ Private Sub TestObjectArray()
     Call ZeroSAPtr(ArrPtr(objArr2))
 
 End Sub
+
+Public Function New_Class1(ByVal aValue As Double) As Class1
+    Set New_Class1 = New Class1: New_Class1.Value = aValue
+End Function
