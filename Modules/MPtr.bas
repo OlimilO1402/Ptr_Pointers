@@ -29,18 +29,22 @@ End Enum
 'Public Const FADF_RECORD As Long = &H20&
 
 Public Type TUDTPtr
-    pSA        As Long
+    pSA        As LongPtr
     Reserved   As Long    ' vbVarType / IRecordInfo
     cDims      As Integer
     fFeatures  As Integer ' SAFeature but int16
     cbElements As Long
     cLocks     As Long
-    pvData     As Long
+    pvData     As LongPtr
     cElements  As Long
     lLBound    As Long
 End Type
 
-Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef Arr() As Any, ByRef Value As Long) 'same as ArrPtr
+#If Win64 Then
+    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
+#Else
+    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
+#End If
 
 Public Declare Sub GetMem1 Lib "msvbvm60" (ByRef Src As Any, ByRef Dst As Any)
 Public Declare Sub GetMem2 Lib "msvbvm60" (ByRef Src As Any, ByRef Dst As Any)
