@@ -70,14 +70,14 @@ End Type
 '
 Public Sub New_ByteSwapper(this As TByteSwapper, Optional ByVal CountBytes As Long = 2)
     With this
-        Call New_UDTPtr(.pB, FADF_EMBEDDED Or FADF_STATIC, 1, CountBytes)
-        Call PutMem4(ByVal ArrPtr(.b), .pB.pSA)
+        New_UDTPtr .pB, FADF_EMBEDDED Or FADF_STATIC, 1, CountBytes
+        PutMemArr ByVal ArrPtr(.b), .pB.pSA
     End With
 End Sub
 
 Public Sub DeleteByteSwapper(this As TByteSwapper)
     With this
-        Call PutMem4(ByVal ArrPtr(.b), 0)
+        PutMemArr ByVal ArrPtr(.b), 0
     End With
 End Sub
 

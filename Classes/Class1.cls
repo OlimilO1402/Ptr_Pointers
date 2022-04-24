@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-'nur eine Dummy-Klasse
+'just a dummy-class
 Public Value As Double
 
 Public Function ToStr()

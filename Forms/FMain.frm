@@ -7,11 +7,21 @@ Begin VB.Form FMain
    ClientWidth     =   4560
    Icon            =   "FMain.frx":0000
    LinkTopic       =   "FMain"
-   ScaleHeight     =   3015
-   ScaleWidth      =   4560
+   ScaleHeight     =   201
+   ScaleMode       =   3  'Pixel
+   ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
    Begin VB.CommandButton BtnTestArrayPointer 
       Caption         =   "Test Array-Pointer"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   2
@@ -20,6 +30,15 @@ Begin VB.Form FMain
    End
    Begin VB.CommandButton BtnTestByteSwapper 
       Caption         =   "Test Byte-Swapper"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   1
@@ -28,6 +47,15 @@ Begin VB.Form FMain
    End
    Begin VB.CommandButton BtnTestCharArray 
       Caption         =   "Test Char-Pointer"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   0
