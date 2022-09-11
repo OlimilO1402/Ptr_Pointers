@@ -32,9 +32,11 @@ End Enum
 Public LongPtr_Empty As LongPtr
 
 #If Win64 Then
-    Public Const LongPtr_Size As LongLong = 8
+    Public Const LongPtr_Size As Long = 8
+    Public Const Variant_Size As Long = 24
 #Else
     Public Const LongPtr_Size As Long = 4
+    Public Const Variant_Size As Long = 16
 #End If
 
 Public Type TUDTPtr
@@ -100,10 +102,10 @@ End Type
 
 'here also everything concerning array pointers like VArrPtr and StrArrPtr
 
-'1. first use SAPtr, oder StrArrPtr or VArrPtr to get the pointer to the safe-array-descriptor
+'1. first use SAPtr, or StrArrPtr or VArrPtr to get the pointer to the safe-array-descriptor
 'helper function for StringArrays
 Public Function StrArrPtr(ByRef strArr As Variant) As LongPtr
-'Achtung, hier 32-bit 64-bit falle
+'Attention, here 32bit-64bit-trap, so use only RtlMoveMemory to be variable in size of ptr
     RtlMoveMemory StrArrPtr, ByVal VarPtr(strArr) + 8, LongPtr_Size
 End Function
 Public Function VArrPtr(ByRef VArr As Variant) As LongPtr
