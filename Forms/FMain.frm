@@ -70,6 +70,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Sub Form_Load()
+    Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
+End Sub
+
 Private Sub BtnTestCharArray_Click()
     Form1.Show vbModal, Me
 End Sub
@@ -80,8 +84,4 @@ End Sub
 
 Private Sub BtnTestArrayPointer_Click()
     Form3.Show vbModal, Me
-End Sub
-
-Private Sub Form_Load()
-    Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
 End Sub

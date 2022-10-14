@@ -1,7 +1,7 @@
 Attribute VB_Name = "MPtr"
 Option Explicit
 
-'In this module everything for working with pointers
+'In this module you can find everything you need for proper working with pointers, LongPtr, udt-pointer, array, function and collection
 
 Public Enum SAFeature
     FADF_AUTO = &H1
@@ -48,7 +48,6 @@ Public Type TUDTPtr
     cElements  As Long
     lLBound    As Long
 End Type
-
 
 #If Win64 Then
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
@@ -98,7 +97,7 @@ End Type
     Public Declare Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #End If
 
-'here also everything concerning array pointers like VArrPtr and StrArrPtr
+'here everything concerning array pointers like VArrPtr and StrArrPtr
 
 '1. first use SAPtr, or StrArrPtr or VArrPtr to get the pointer to the safe-array-descriptor
 'helper function for StringArrays
@@ -124,6 +123,19 @@ Public Sub ZeroSAPtr(ByVal pArr As LongPtr)
     RtlZeroMemory ByVal pArr, MPtr.SizeOf_LongPtr
 End Sub
 
+Public Function FncPtr(ByVal pfn As Long) As Long
+    FncPtr = pfn
+End Function
+
+Public Function Col_Contains(col As Collection, key As String) As Boolean
+    'for this Function all credits go to the incredible www.vb-tec.de alias Jost Schwider
+    'you can find the original version of this function here: https://vb-tec.de/collctns.htm
+    On Error Resume Next
+    If IsEmpty(col(key)) Then: 'DoNothing
+    Col_Contains = (Err.Number = 0)
+    On Error GoTo 0
+End Function
+    
 Public Sub New_UDTPtr(ByRef this As TUDTPtr, _
                       ByVal Feature As SAFeature, _
                       ByVal bytesPerElement As Long, _
@@ -168,27 +180,30 @@ Private Function FeaturesToString(ByVal Feature As SAFeature) As String
     Dim s As String
     Dim sOr As String: sOr = " Or "
     
-    If Feature And FADF_AUTO Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_AUTO"
-    If Feature And FADF_STATIC Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_STATIC"
-    
-    If Feature And FADF_EMBEDDED Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_EMBEDDED"
-    
-    If Feature And FADF_FIXEDSIZE Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_FIXEDSIZE"
-    
-    If Feature And FADF_RECORD Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_RECORD"
-    If Feature And FADF_HAVEIID Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_HAVEIID"
-    
-    If Feature And FADF_HAVEVARTYPE Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_HAVEVARTYPE"
-    
-    If Feature And FADF_BSTR Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_BSTR"
-    If Feature And FADF_UNKNOWN Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_UNKNOWN"
-    
-    If Feature And FADF_DISPATCH Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_DISPATCH"
-    
-    If Feature And FADF_VARIANT Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_VARIANT"
-    
-    If Feature And FADF_RESERVED Then s = s & IIf(Len(s), sOr, vbNullString): s = s & "FADF_RESERVED"
-    
+    If Feature And FADF_AUTO Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_AUTO"
+    If Feature And FADF_STATIC Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_STATIC"
+    If Feature And FADF_EMBEDDED Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_EMBEDDED"
+    If Feature And FADF_FIXEDSIZE Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_FIXEDSIZE"
+    If Feature And FADF_RECORD Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_RECORD"
+    If Feature And FADF_HAVEIID Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_HAVEIID"
+    If Feature And FADF_HAVEVARTYPE Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_HAVEVARTYPE"
+    If Feature And FADF_BSTR Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_BSTR"
+    If Feature And FADF_UNKNOWN Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_UNKNOWN"
+    If Feature And FADF_DISPATCH Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_DISPATCH"
+    If Feature And FADF_VARIANT Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_VARIANT"
+    If Feature And FADF_RESERVED Then _
+                                        s = s & IIf(Len(s), sOr, vbNullString) & "FADF_RESERVED"
     FeaturesToString = s
     
 End Function
