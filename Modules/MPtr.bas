@@ -123,7 +123,7 @@ Public Sub ZeroSAPtr(ByVal pArr As LongPtr)
     RtlZeroMemory ByVal pArr, MPtr.SizeOf_LongPtr
 End Sub
 
-Public Function FncPtr(ByVal pfn As Long) As Long
+Public Function FncPtr(ByVal pfn As LongPtr) As LongPtr
     FncPtr = pfn
 End Function
 
