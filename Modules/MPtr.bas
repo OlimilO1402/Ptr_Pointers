@@ -24,6 +24,8 @@ End Enum
     Public Enum LongPtr
         [_]
     End Enum
+#End If
+#If Win64 = 0 Then
     Public Enum LongLong
         [_]
     End Enum
