@@ -11,6 +11,23 @@ Begin VB.Form FMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnTestSAPtr 
+      Caption         =   "Test SAPtr"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   375
+      Left            =   2280
+      TabIndex        =   3
+      Top             =   240
+      Width           =   1575
+   End
    Begin VB.CommandButton BtnTestArrayPointer 
       Caption         =   "Test Array-Pointer"
       BeginProperty Font 
@@ -69,6 +86,19 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+
+Private Sub BtnTestSAPtr_Click()
+    ReDim sa(0 To 10) As String
+    sa(0) = "one"
+    sa(1) = "two"
+    
+    Dim saX() As String
+    SAPtr(StrArrPtr(saX)) = SAPtr(StrArrPtr(sa))
+    
+    MsgBox saX(0)
+    
+    ZeroSAPtr StrArrPtr(saX)
+End Sub
 
 Private Sub Form_Load()
     Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
