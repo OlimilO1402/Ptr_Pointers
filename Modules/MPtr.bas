@@ -210,7 +210,10 @@ Private Function FeaturesToString(ByVal Feature As SAFeature) As String
     
 End Function
 
+Public Function PtrToObject(ByVal p As LongPtr) As Object
+    RtlMoveMemory ByVal VarPtr(PtrToObject), p, MPtr.SizeOf_LongPtr
+End Function
 
-
-
-
+Public Sub ZeroObject(obj As Object)
+    RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
+End Sub
