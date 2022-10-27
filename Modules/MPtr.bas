@@ -129,15 +129,16 @@ Public Function FncPtr(ByVal pfn As LongPtr) As LongPtr
     FncPtr = pfn
 End Function
 
-Public Function Col_Contains(col As Collection, key As String) As Boolean
+Public Function Col_Contains(col As Collection, Key As String) As Boolean
     'for this Function all credits go to the incredible www.vb-tec.de alias Jost Schwider
     'you can find the original version of this function here: https://vb-tec.de/collctns.htm
     On Error Resume Next
-    If IsEmpty(col(key)) Then: 'DoNothing
+'  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
+    If IsEmpty(col(Key)) Then: 'DoNothing
     Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
-    
+
 Public Sub New_UDTPtr(ByRef this As TUDTPtr, _
                       ByVal Feature As SAFeature, _
                       ByVal bytesPerElement As Long, _
@@ -155,7 +156,7 @@ Public Sub New_UDTPtr(ByRef this As TUDTPtr, _
     
 End Sub
 
-' checks content of UDTPtr
+' Checks content of UDTPtr
 Public Function UDTPtrToString(this As TUDTPtr) As String
     
     Dim s As String
