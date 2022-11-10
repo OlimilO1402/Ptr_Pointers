@@ -77,7 +77,7 @@ Private Sub BtnTestInt32_Click()
     sw.SStop
     't = Timer - t
     s = s & "MByteSwapper.Rotate4: Array of size 16MB " & sw.ElapsedToString & "s" & vbCrLf
-    Call MByteSwapper.DeleteByteSwapper(bs)
+    Call MByteSwapper.ByteSwapper_Delete(bs)
     
     Text1.Text = s
     Text1.SelStart = Len(s)

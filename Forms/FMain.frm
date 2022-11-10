@@ -23,10 +23,10 @@ Begin VB.Form FMain
          Strikethrough   =   0   'False
       EndProperty
       Height          =   375
-      Left            =   2280
+      Left            =   240
       TabIndex        =   3
-      Top             =   240
-      Width           =   1575
+      Top             =   2040
+      Width           =   1695
    End
    Begin VB.CommandButton BtnTestArrayPointer 
       Caption         =   "Test Array-Pointer"

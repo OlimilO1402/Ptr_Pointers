@@ -1,8 +1,9 @@
 Attribute VB_Name = "MPtr"
 Option Explicit
 
-'In this module you can find everything you need for proper working with pointers, LongPtr, udt-pointer, array, function and collection
+'In this module you can find everything you need concerning pointers in general and for proper working with it, LongPtr, udt-pointer, array, function and collection
 
+'this Enum will be used in the SafeArray-descrptor
 Public Enum SAFeature
     FADF_AUTO = &H1
     FADF_STATIC = &H2
@@ -25,11 +26,11 @@ End Enum
         [_]
     End Enum
 #End If
-#If Win64 = 0 Then
-    Public Enum LongLong
-        [_]
-    End Enum
-#End If
+'#If Win64 = 0 Then
+'    Public Enum LongLong
+'        [_]
+'    End Enum
+'#End If
 
 Public LongPtr_Empty As LongPtr
 
@@ -39,6 +40,7 @@ Public LongPtr_Empty As LongPtr
     Public Const SizeOf_LongPtr As Long = 4
 #End If
 
+' a SafeArray-descriptor serves perfectly as a universal pointer
 Public Type TUDTPtr
     pSA        As LongPtr
     Reserved   As LongPtr ' vbVarType / IRecordInfo
@@ -49,6 +51,12 @@ Public Type TUDTPtr
     pvData     As LongPtr
     cElements  As Long
     lLBound    As Long
+End Type
+
+' the TSafeArrayPtr lightweight-object structure
+Public Type TSafeArrayPtr
+    pSAPtr As TUDTPtr
+    pSA()  As TUDTPtr
 End Type
 
 #If Win64 Then
@@ -74,11 +82,12 @@ End Type
     Public Declare PtrSafe Sub PutMemDbl Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As Double)
     Public Declare PtrSafe Sub PutMemDat Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As Date)
     
-    Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong)
-    Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)
+    Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong) ' LongLong !
+    Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)                    ' LongLong !
     
     Public Declare PtrSafe Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #Else
+    'GetMem and PutMem are copying memory just like RtlMoveMemory but only for a certain amount of bytes
     Public Declare Sub GetMem1 Lib "msvbvm60" (ByRef src As Any, ByRef Dst As Any)
     Public Declare Sub GetMem2 Lib "msvbvm60" (ByRef src As Any, ByRef Dst As Any)
     Public Declare Sub GetMem4 Lib "msvbvm60" (ByRef src As Any, ByRef Dst As Any)
@@ -93,16 +102,15 @@ End Type
     Public Declare Sub PutMemDbl Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal src As Double)
     Public Declare Sub PutMemDat Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal src As Date)
     
-    Public Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong)
-    Public Declare Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)
+    Public Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long) ' LongLong
+    Public Declare Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
     
     Public Declare Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #End If
 
-'here everything concerning array pointers like VArrPtr and StrArrPtr
-
-'1. first use SAPtr, or StrArrPtr or VArrPtr to get the pointer to the safe-array-descriptor
-'helper function for StringArrays
+'1. first use ArrPtr, or StrArrPtr or VArrPtr to get the pointer to the safe-array-descriptor
+'   from the array-variable, when it has a dimension, otherwise the pointer is 0
+'   helper function for StringArrays
 Public Function StrArrPtr(ByRef strArr As Variant) As LongPtr
 'Attention, here 32bit-64bit-trap, so use only RtlMoveMemory to be variable in size of ptr
     RtlMoveMemory StrArrPtr, ByVal VarPtr(strArr) + 8, MPtr.SizeOf_LongPtr
@@ -125,6 +133,7 @@ Public Sub ZeroSAPtr(ByVal pArr As LongPtr)
     RtlZeroMemory ByVal pArr, MPtr.SizeOf_LongPtr
 End Sub
 
+'retrieve the pointer to a function by using FncPtr(Addressof myfunction)
 Public Function FncPtr(ByVal pfn As LongPtr) As LongPtr
     FncPtr = pfn
 End Function
@@ -156,8 +165,18 @@ Public Sub New_UDTPtr(ByRef this As TUDTPtr, _
     
 End Sub
 
+Public Sub UDTPtr_Assign(pDst As TUDTPtr, pSrc As TUDTPtr)
+'hier wird nicht einfach nur zugewiesen in der Art pDst = pSrc
+'sondern hier wird nur pvdata und cElements zugewiesen, wobei
+'cElements in Abhängigkeit von cbElement entsprechend angepasst wird
+    pDst.pvData = pSrc.pvData
+    If pDst.cbElements > 0 Then
+        pDst.cElements = pSrc.cElements * pSrc.cbElements \ pDst.cbElements + 1
+    End If
+End Sub
+
 ' Checks content of UDTPtr
-Public Function UDTPtrToString(this As TUDTPtr) As String
+Public Function UDTPtr_ToStr(this As TUDTPtr) As String
     
     Dim s As String
     
@@ -173,7 +192,7 @@ Public Function UDTPtrToString(this As TUDTPtr) As String
         s = s & "lLBound    : " & CStr(.lLBound) & vbCrLf
     End With
     
-    UDTPtrToString = s
+    UDTPtr_ToStr = s
     
 End Function
 
@@ -218,3 +237,35 @@ End Function
 Public Sub ZeroObject(obj As Object)
     RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
 End Sub
+
+
+Public Sub New_SafeArrayPtr(this As TSafeArrayPtr)
+    ' creates a new SafeArrayPtr-lightweight-object
+    ' works only as a Sub (with ByRef this) because of VarPtr(cDims)
+    With this
+        New_UDTPtr .pSAPtr, SAFeature.FADF_EMBEDDED Or SAFeature.FADF_STATIC Or SAFeature.FADF_RECORD, LenB(.pSAPtr)
+        SAPtr(ArrPtr(.pSA)) = .pSAPtr.pSA
+    End With
+End Sub
+
+Public Sub SafeArrayPtr_Delete(this As TSafeArrayPtr)
+    ' deletes a TSafeArrayPtr-lightweight-object
+    ZeroSAPtr ByVal ArrPtr(this.pSA)
+End Sub
+
+Public Property Let SafeArrayPtr_SAPtr(this As TSafeArrayPtr, ByVal Value As LongPtr)
+    ' writes the pointer to a SafeArrayDescriptor-structure into a
+    ' TSafeArrayPtr-lightweight-object
+    Dim p As LongPtr
+    'Call GetMem4(ByVal Value, p)
+    
+    this.pSAPtr.pvData = p - 2 * SizeOf_LongPtr
+    ' -8 ist Mist
+    ' -8 weil zuerst pSA und Reserved und dann kommt erst
+    ' der Anfang der SafeArrayDesc-Struktur mit cDims
+End Property
+
+Public Function SafeArrayPtr_ToStr(this As TSafeArrayPtr) As String
+    SafeArrayPtr_ToStr = MPtr.UDTPtr_ToStr(this.pSA(0))
+End Function
+
