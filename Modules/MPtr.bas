@@ -5,20 +5,20 @@ Option Explicit
 
 'this Enum will be used in the SafeArray-descrptor
 Public Enum SAFeature
-    FADF_AUTO = &H1
-    FADF_STATIC = &H2
-    FADF_EMBEDDED = &H4
+    FADF_AUTO = &H1         ' An array that is allocated on the stack.
+    FADF_STATIC = &H2       ' An array that is statically allocated.
+    FADF_EMBEDDED = &H4     ' An array that is embedded in a structure.
 
-    FADF_FIXEDSIZE = &H10
-    FADF_RECORD = &H20
-    FADF_HAVEIID = &H40
-    FADF_HAVEVARTYPE = &H80
+    FADF_FIXEDSIZE = &H10   ' An array that may not be resized or reallocated.
+    FADF_RECORD = &H20      ' An array that contains records. When set, there will be a pointer to the IRecordInfo interface at negative offset 4 in the array descriptor.
+    FADF_HAVEIID = &H40     ' An array that has an IID identifying interface. When set, there will be a GUID at negative offset 16 in the safe array descriptor. Flag is set only when FADF_DISPATCH or FADF_UNKNOWN is also set.
+    FADF_HAVEVARTYPE = &H80 ' An array that has a variant type. The variant type can be retrieved with SafeArrayGetVartype.
     
-    FADF_BSTR = &H100
-    FADF_UNKNOWN = &H200
-    FADF_DISPATCH = &H400
-    FADF_VARIANT = &H800&
-    FADF_RESERVED = &HF008
+    FADF_BSTR = &H100       ' An array of BSTRs.
+    FADF_UNKNOWN = &H200    ' An array of IUnknown*.
+    FADF_DISPATCH = &H400   ' An array of IDispatch*.
+    FADF_VARIANT = &H800&   ' An array of VARIANTs.
+    FADF_RESERVED = &HF008  ' Bits reserved for future use.
 End Enum
 
 #If VBA7 = 0 Then
@@ -40,17 +40,19 @@ Public LongPtr_Empty As LongPtr
     Public Const SizeOf_LongPtr As Long = 4
 #End If
 
+' https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearray
+' https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearraybound
 ' a SafeArray-descriptor serves perfectly as a universal pointer
 Public Type TUDTPtr
-    pSA        As LongPtr
+    pSA        As LongPtr ' pointer to cDims
     Reserved   As LongPtr ' vbVarType / IRecordInfo
-    cDims      As Integer
-    fFeatures  As Integer ' SAFeature but int16
-    cbElements As Long
-    cLocks     As Long
-    pvData     As LongPtr
-    cElements  As Long
-    lLBound    As Long
+    cDims      As Integer ' The number of Dimensions
+    fFeatures  As Integer ' Flags SAFeature but int16
+    cbElements As Long    ' The size of an array element.
+    cLocks     As Long    ' The number of times the array has been locked without a corresponding unlock.
+    pvData     As LongPtr ' The data
+    cElements  As Long    ' The number of elements in the dimension.
+    lLBound    As Long    ' The lower bound of the dimension.
 End Type
 
 ' the TSafeArrayPtr lightweight-object structure
@@ -115,9 +117,15 @@ Public Function StrArrPtr(ByRef strArr As Variant) As LongPtr
 'Attention, here 32bit-64bit-trap, so use only RtlMoveMemory to be variable in size of ptr
     RtlMoveMemory StrArrPtr, ByVal VarPtr(strArr) + 8, MPtr.SizeOf_LongPtr
 End Function
-Public Function VArrPtr(ByRef VArr As Variant) As LongPtr
-    RtlMoveMemory VArrPtr, ByVal VarPtr(VArr) + 8, MPtr.SizeOf_LongPtr
+Public Function VArrPtr(ByRef vArr As Variant) As LongPtr
+    RtlMoveMemory VArrPtr, ByVal VarPtr(vArr) + 8, MPtr.SizeOf_LongPtr
 End Function
+
+Public Property Get VarSAPtr(ByRef vArr As Variant) As LongPtr
+    '        VarSAPtr =
+    PutMem4 VarSAPtr, VarPtr(vArr) + 8
+    'should be the same as VArrPtr, shouldn't it?
+End Property
 
 '2. now you are able to use the Property SAPtr for all arrays, for assigning
 '   the pointer to a safe-array-descriptor to another array.
@@ -257,7 +265,8 @@ Public Property Let SafeArrayPtr_SAPtr(this As TSafeArrayPtr, ByVal Value As Lon
     ' writes the pointer to a SafeArrayDescriptor-structure into a
     ' TSafeArrayPtr-lightweight-object
     Dim p As LongPtr
-    'Call GetMem4(ByVal Value, p)
+    'GetMem4 ByVal Value, p
+    RtlMoveMemory p, ByVal Value, SizeOf_LongPtr
     
     this.pSAPtr.pvData = p - 2 * SizeOf_LongPtr
     ' -8 ist Mist

@@ -24,29 +24,12 @@ Begin VB.Form FMain
       EndProperty
       Height          =   375
       Left            =   240
-      TabIndex        =   3
-      Top             =   2040
-      Width           =   1695
-   End
-   Begin VB.CommandButton BtnTestArrayPointer 
-      Caption         =   "Test Array-Pointer"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   375
-      Left            =   240
       TabIndex        =   2
       Top             =   1440
       Width           =   1695
    End
-   Begin VB.CommandButton BtnTestByteSwapper 
-      Caption         =   "Test Byte-Swapper"
+   Begin VB.CommandButton BtnTestArrayPointer 
+      Caption         =   "Test Array-Pointer"
       BeginProperty Font 
          Name            =   "Tahoma"
          Size            =   8.25
@@ -108,9 +91,9 @@ Private Sub BtnTestCharArray_Click()
     Form1.Show vbModal, Me
 End Sub
 
-Private Sub BtnTestByteSwapper_Click()
-    Form2.Show vbModal, Me
-End Sub
+'Private Sub BtnTestByteSwapper_Click()
+'    Form2.Show vbModal, Me
+'End Sub
 
 Private Sub BtnTestArrayPointer_Click()
     Form3.Show vbModal, Me
