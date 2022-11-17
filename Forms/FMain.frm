@@ -11,6 +11,23 @@ Begin VB.Form FMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnTSafeArrayPtr 
+      Caption         =   "Test SafeArrayPtr"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   375
+      Left            =   240
+      TabIndex        =   3
+      Top             =   840
+      Width           =   1935
+   End
    Begin VB.CommandButton BtnTestSAPtr 
       Caption         =   "Test SAPtr"
       BeginProperty Font 
@@ -25,8 +42,8 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   2
-      Top             =   1440
-      Width           =   1695
+      Top             =   2040
+      Width           =   1935
    End
    Begin VB.CommandButton BtnTestArrayPointer 
       Caption         =   "Test Array-Pointer"
@@ -42,8 +59,8 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   1
-      Top             =   840
-      Width           =   1695
+      Top             =   1440
+      Width           =   1935
    End
    Begin VB.CommandButton BtnTestCharArray 
       Caption         =   "Test Char-Pointer"
@@ -60,7 +77,7 @@ Begin VB.Form FMain
       Left            =   240
       TabIndex        =   0
       Top             =   240
-      Width           =   1695
+      Width           =   1935
    End
 End
 Attribute VB_Name = "FMain"
@@ -81,6 +98,10 @@ Private Sub BtnTestSAPtr_Click()
     MsgBox saX(0)
     
     ZeroSAPtr StrArrPtr(saX)
+End Sub
+
+Private Sub BtnTSafeArrayPtr_Click()
+    Form2.Show
 End Sub
 
 Private Sub Form_Load()
