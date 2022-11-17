@@ -50,10 +50,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 Private Type TAnyType
-  XVar As Long
-  YVar As Single
-  ZVar As Double
-  SVar As String
+    XVar As Long
+    YVar As Single
+    ZVar As Double
+    SVar As String
 End Type
 
 Private Sub Command1_Click()

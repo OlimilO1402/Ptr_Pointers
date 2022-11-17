@@ -187,11 +187,16 @@ End Sub
 Public Function UDTPtr_ToStr(this As TUDTPtr) As String
     
     Dim s As String
-    
+    Dim saf As SAFeature
     With this
+        saf = .fFeatures
         s = s & "pSA        : " & CStr(.pSA) & vbCrLf
-        s = s & "Reserved   : " & CStr(.Reserved) & vbCrLf
         s = s & "cDims      : " & CStr(.cDims) & vbCrLf
+        If saf And FADF_HAVEVARTYPE Then
+            s = s & "VarType    : " & VBVarType_ToStr(.Reserved) & vbCrLf
+        Else
+            s = s & "Reserved   : " & .Reserved & vbCrLf
+        End If
         s = s & "fFeatures  : " & FeaturesToString(CLng(.fFeatures)) & vbCrLf
         s = s & "cbElements : " & CStr(.cbElements) & vbCrLf
         s = s & "cLocks     : " & CStr(.cLocks) & vbCrLf
@@ -278,3 +283,19 @@ Public Function SafeArrayPtr_ToStr(this As TSafeArrayPtr) As String
     SafeArrayPtr_ToStr = MPtr.UDTPtr_ToStr(this.pSA(0))
 End Function
 
+Private Function VBVarType_ToStr(vt As VbVarType) As String
+    Dim s As String
+    Select Case vt
+    Case VbVarType.vbByte:       s = "Byte"
+    Case VbVarType.vbInteger:    s = "Integer"
+    Case VbVarType.vbLong:       s = "Long"
+    Case VbVarType.vbSingle:     s = "Single"
+    Case VbVarType.vbDouble:     s = "Double"
+    Case VbVarType.vbDate:       s = "Date"
+    Case VbVarType.vbString:     s = "String"
+    Case VbVarType.vbCurrency:   s = "Currency"
+    Case VbVarType.vbDataObject: s = "DataObject"
+    Case VbVarType.vbDecimal:    s = "Decimal"
+    End Select
+    VBVarType_ToStr = s
+End Function
