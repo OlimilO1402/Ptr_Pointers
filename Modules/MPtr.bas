@@ -194,6 +194,9 @@ Public Function UDTPtr_ToStr(this As TUDTPtr) As String
         s = s & "cDims      : " & CStr(.cDims) & vbCrLf
         If saf And FADF_HAVEVARTYPE Then
             s = s & "VarType    : " & VBVarType_ToStr(.Reserved) & vbCrLf
+        ElseIf saf And FADF_DISPATCH Then
+            s = s & "VarType    : " & VBVarType_ToStr(vbObject) & vbCrLf
+            s = s & "PtrToIUnkn : " & .Reserved & vbCrLf
         Else
             s = s & "Reserved   : " & .Reserved & vbCrLf
         End If
@@ -296,6 +299,7 @@ Private Function VBVarType_ToStr(vt As VbVarType) As String
     Case VbVarType.vbCurrency:   s = "Currency"
     Case VbVarType.vbDataObject: s = "DataObject"
     Case VbVarType.vbDecimal:    s = "Decimal"
+    Case VbVarType.vbObject:     s = "Object"
     End Select
     VBVarType_ToStr = s
 End Function
