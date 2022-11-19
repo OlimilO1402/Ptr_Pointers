@@ -189,14 +189,15 @@ Public Function UDTPtr_ToStr(this As TUDTPtr) As String
     Dim s As String
     Dim saf As SAFeature
     With this
-        saf = .fFeatures
         s = s & "pSA        : " & CStr(.pSA) & vbCrLf
         s = s & "cDims      : " & CStr(.cDims) & vbCrLf
+        
+        saf = .fFeatures
         If saf And FADF_HAVEVARTYPE Then
             s = s & "VarType    : " & VBVarType_ToStr(.Reserved) & vbCrLf
         ElseIf saf And FADF_DISPATCH Then
             s = s & "VarType    : " & VBVarType_ToStr(vbObject) & vbCrLf
-            s = s & "PtrToIUnkn : " & .Reserved & vbCrLf
+            s = s & "pVTable    : " & .Reserved & vbCrLf
         Else
             s = s & "Reserved   : " & .Reserved & vbCrLf
         End If
