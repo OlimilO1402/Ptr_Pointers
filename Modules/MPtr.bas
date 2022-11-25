@@ -475,9 +475,9 @@ Public Sub RotateArray(this As TByteSwapper, vArr)
     Dim lb As Long: lb = LBound(vArr)
     Dim cnt As Long: cnt = ub - lb + 1
     
-    Debug.Print "TByteSwapper.pB(=TUDTPtr)" & vbCrLf & UDTPtr_ToStr(this.pB)
+    'Debug.Print "TByteSwapper.pB(=TUDTPtr)" & vbCrLf & UDTPtr_ToStr(this.pB)
     
-    Debug.Print "SafeArrayPtr.pSAPtr:     " & vbCrLf & UDTPtr_ToStr(pSA.pSAPtr)
+    'Debug.Print "SafeArrayPtr.pSAPtr:     " & vbCrLf & UDTPtr_ToStr(pSA.pSAPtr)
     
     If cnt > 0 Then
         With this
@@ -615,10 +615,10 @@ Public Sub String_Rotate2(s As String)
     Dim i As Long
     'With bs
         For i = 0 To Len(s)
-            bs.pB.pvData = bs.pB.pvData + 2
             bs.tmpByte = bs.b(0)
             bs.b(0) = bs.b(1)
             bs.b(1) = bs.tmpByte
+            bs.pB.pvData = bs.pB.pvData + 2
         Next
     'End With
     ByteSwapper_Delete bs
