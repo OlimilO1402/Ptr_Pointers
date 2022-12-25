@@ -3,10 +3,17 @@
 
 [![GitHub](https://img.shields.io/github/license/OlimilO1402/Ptr_Pointers?style=plastic)](https://github.com/OlimilO1402/Ptr_Pointers/blob/master/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/OlimilO1402/Ptr_Pointers?style=plastic)](https://github.com/OlimilO1402/Ptr_Pointers/releases/latest)
-[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Ptr_Pointers/total.svg)](https://github.com/OlimilO1402/Ptr_Pointers/releases/download/v1.0.4/VBPointers_v1.0.4.zip)
-[![Follow](https://img.shields.io/github/followers/OlimilO1402.svg?style=social&label=Follow&maxAge=2592000)](https://github.com/OlimilO1402/Ptr_Pointers/watchers)
+[![Github All Releases](https://img.shields.io/github/downloads/OlimilO1402/Ptr_Pointers/total.svg)](https://github.com/OlimilO1402/Ptr_Pointers/releases/download/v2022.12.25/VBPointers_v2022.12.25.zip)
+![GitHub followers](https://img.shields.io/github/followers/OlimilO1402?style=social)
 
 Project started around mid 2006.   
-
+The Module MPtr is used in many repos. It contains
+* the Alias LongPtr for making code compatible with VBC / VBA7-x86-x64
+* the universal pointer TUDTPtr-structure
+* the TSafeArrayPtr-structure
+* all GetMem/PutMem declarations
+* every function for working with SafeArray-pointers
+* Collection-functions
+* the TByteSwapper-structure all byteswapping-and SwapByteOrder-functions
 
 ![VBPointers Image](Resources/VBPointers.png "VBPointers Image")
