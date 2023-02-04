@@ -8,7 +8,7 @@ Public Enum SAFeature
     FADF_AUTO = &H1         ' An array that is allocated on the stack.
     FADF_STATIC = &H2       ' An array that is statically allocated.
     FADF_EMBEDDED = &H4     ' An array that is embedded in a structure.
-
+    
     FADF_FIXEDSIZE = &H10   ' An array that may not be resized or reallocated.
     FADF_RECORD = &H20      ' An array that contains records. When set, there will be a pointer to the IRecordInfo interface at negative offset 4 in the array descriptor.
     FADF_HAVEIID = &H40     ' An array that has an IID identifying interface. When set, there will be a GUID at negative offset 16 in the safe array descriptor. Flag is set only when FADF_DISPATCH or FADF_UNKNOWN is also set.
@@ -86,6 +86,10 @@ End Type
     
     Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong) ' LongLong !
     Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)                    ' LongLong !
+    Public Declare PtrSafe Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
+    
+    'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
+    Public Declare PtrSafe Function RtlCompareMemory Lib "kernel32" (ByRef pSrc0 As Any, ByRef pSrc1 As Any, ByVal BytLen As Long) as Long
     
     Public Declare PtrSafe Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #Else
@@ -106,6 +110,11 @@ End Type
     
     Public Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long) ' LongLong
     Public Declare Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
+    Public Declare Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
+    
+    'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
+    Public Declare Function RtlCompareMemory Lib "ntdll" (ByRef pSrc1 As Any, ByRef pSrc2 As Any, ByVal BytLen As Long) As Long ' NTSYSAPI
+    'RtlCompareMemory returns the number of bytes in the two blocks that match. If all bytes match up to the specified Length value, the Length value is returned.
     
     Public Declare Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #End If
@@ -135,7 +144,7 @@ End Type
     Public Declare PtrSafe Sub SBO_Rotate8 Lib "SwapByteOrder" Alias "SwapByteOrder64" (ByRef Ptr As Any)
     Public Declare PtrSafe Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef Value() As Any) As Long
     Public Declare PtrSafe Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
-
+    
 #Else
     
     'The following functions can be found in the dll SwapByteOrder, written in assembler, and are much faster.
@@ -144,7 +153,7 @@ End Type
     Public Declare Sub SBO_Rotate8 Lib "SwapByteOrder" Alias "SwapByteOrder64" (ByRef Ptr As Any)
     Public Declare Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef Value() As Any) As Long
     Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
-
+    
 #End If
 
 ' ^ ############################## ^ '    MByteSwapper Declarations    ' ^ ############################## ^ '
@@ -186,8 +195,8 @@ End Sub
 ' ^ ############################## ^ '    Array-Ptr Functions    ' ^ ############################## ^ '
 
 'retrieve the pointer to a function by using FncPtr(Addressof myfunction)
-Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
-    FncPtr = PFN
+Public Function FncPtr(ByVal pfn As LongPtr) As LongPtr
+    FncPtr = pfn
 End Function
 
 ' v ############################## v '    Collection Functions    ' v ############################## v '
