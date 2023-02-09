@@ -36,8 +36,10 @@ Public LongPtr_Empty As LongPtr
 
 #If Win64 Then
     Public Const SizeOf_LongPtr As Long = 8
+    Public Const SizeOf_Variant As Long = 20
 #Else
     Public Const SizeOf_LongPtr As Long = 4
+    Public Const SizeOf_Variant As Long = 16
 #End If
 
 ' https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearray
