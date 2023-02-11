@@ -34,7 +34,7 @@ End Enum
 
 Public LongPtr_Empty As LongPtr
 
-#If Win64 Then
+#If win64 Then
     Public Const SizeOf_LongPtr As Long = 8
     Public Const SizeOf_Variant As Long = 20
 #Else
@@ -63,7 +63,7 @@ Public Type TSafeArrayPtr
     pSA()  As TUDTPtr
 End Type
 
-#If Win64 Then
+#If win64 Then
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
 #Else
@@ -85,14 +85,19 @@ End Type
     Public Declare PtrSafe Sub PutMem8 Lib "msvbvm60" (ByRef Dst As Any, ByVal Src As Currency)
     Public Declare PtrSafe Sub PutMemDbl Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As Double)
     Public Declare PtrSafe Sub PutMemDat Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As Date)
-    
-    Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong) ' LongLong !
-    Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)                    ' LongLong !
-    Public Declare PtrSafe Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
-    
-    'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
-    Public Declare PtrSafe Function RtlCompareMemory Lib "kernel32" (ByRef pSrc0 As Any, ByRef pSrc1 As Any, ByVal BytLen As Long) as Long
-    
+    #If win64 Then
+        Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong)
+        Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)
+        Public Declare PtrSafe Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)
+        'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
+        Public Declare PtrSafe Function RtlCompareMemory Lib "kernel32" (ByRef pSrc0 As Any, ByRef pSrc1 As Any, ByVal BytLen As LongLong) as Long
+    #Else
+        Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long)
+        Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long)
+        Public Declare PtrSafe Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long)
+        'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
+        Public Declare PtrSafe Function RtlCompareMemory Lib "kernel32" (ByRef pSrc0 As Any, ByRef pSrc1 As Any, ByVal BytLen As Long) as Long
+    #End If
     Public Declare PtrSafe Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #Else
     'GetMem and PutMem are copying memory just like RtlMoveMemory but only for a certain amount of bytes
@@ -110,9 +115,9 @@ End Type
     Public Declare Sub PutMemDbl Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal src As Double)
     Public Declare Sub PutMemDat Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal src As Date)
     
-    Public Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long) ' LongLong
-    Public Declare Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
-    Public Declare Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long) 'LongLong
+    Public Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long)
+    Public Declare Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long)
+    Public Declare Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long)
     
     'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
     Public Declare Function RtlCompareMemory Lib "ntdll" (ByRef pSrc1 As Any, ByRef pSrc2 As Any, ByVal BytLen As Long) As Long ' NTSYSAPI
