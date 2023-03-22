@@ -217,6 +217,13 @@ Public Function Col_Contains(col As Collection, Key As String) As Boolean
     On Error GoTo 0
 End Function
 
+Public Function Col_TryAddObject(col As Collection, obj As Object, Key As String) As Boolean
+Try: On Error GoTo Catch
+    col.Add obj, Key
+    Col_TryAddObject = True
+Catch: On Error GoTo 0
+End Function
+
 Public Sub Col_SwapItems(col As Collection, ByVal i1 As Long, i2 As Long)
     Dim c As Long: c = col.Count
     If c = 0 Then Exit Sub
@@ -238,6 +245,7 @@ End Sub
 Public Sub Col_MoveDown(col As Collection, ByVal i As Long)
     Col_SwapItems col, i, i + 1
 End Sub
+
 ' ^ ############################## ^ '    Collection Functions    ' ^ ############################## ^ '
 
 
@@ -338,6 +346,7 @@ End Function
 ' ^ ############################## ^ '    UDTPtr Functions    ' ^ ############################## ^ '
 
 
+' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
     RtlMoveMemory ByVal VarPtr(PtrToObject), p, MPtr.SizeOf_LongPtr
@@ -347,6 +356,7 @@ Public Sub ZeroObject(obj As Object)
     RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
 End Sub
 
+' ^ ############################## ^ '  Object-WeakPtr Funcs  ' ^ ############################## ^ '
 
 
 ' v ############################## v '    SafeArrayPtr Functions   ' v ############################## v '
@@ -403,6 +413,15 @@ End Function
 ' ^ ############################## ^ '    SafeArrayPtr Functions    ' ^ ############################## ^ '
 
 
+' v ############################## v '         Math Functions       ' v ############################## v '
+Public Function Min(V1, V2)
+    If V1 < V2 Then Min = V1 Else Min = V2
+End Function
+
+Public Function Max(V1, V2)
+    If V1 > V2 Then Max = V1 Else Max = V2
+End Function
+' ^ ############################## ^ '         Math Functions       ' ^ ############################## ^ '
 
 ' v ############################## v '    MByteSwapper Functions   ' v ############################## v '
 
