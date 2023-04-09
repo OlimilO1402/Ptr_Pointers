@@ -15,5 +15,6 @@ The Module MPtr is used in many repos. It contains
 * every function for working with SafeArray-pointers
 * Collection-functions
 * the TByteSwapper-structure all byteswapping-and SwapByteOrder-functions
+* weak obj-pointer functions
 
 ![VBPointers Image](Resources/VBPointers.png "VBPointers Image")
