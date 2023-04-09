@@ -5,6 +5,15 @@ Begin VB.Form Form2
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   8070
+   BeginProperty Font 
+      Name            =   "Segoe UI"
+      Size            =   8.25
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    LinkTopic       =   "Form2"
    ScaleHeight     =   4215
    ScaleWidth      =   8070

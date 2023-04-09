@@ -5,6 +5,15 @@ Begin VB.Form Form3
    ClientLeft      =   60
    ClientTop       =   450
    ClientWidth     =   4680
+   BeginProperty Font 
+      Name            =   "Segoe UI"
+      Size            =   8.25
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    Icon            =   "Form3.frx":0000
    LinkTopic       =   "Form3"
    ScaleHeight     =   3090

@@ -1,27 +1,35 @@
 VERSION 5.00
 Begin VB.Form FMain 
    Caption         =   "VBPointers"
-   ClientHeight    =   3015
+   ClientHeight    =   3255
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   4560
+   BeginProperty Font 
+      Name            =   "Segoe UI"
+      Size            =   8.25
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    Icon            =   "FMain.frx":0000
    LinkTopic       =   "FMain"
-   ScaleHeight     =   201
+   ScaleHeight     =   217
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnTestObjPtr 
+      Caption         =   "Test ObjPtr"
+      Height          =   375
+      Left            =   240
+      TabIndex        =   4
+      Top             =   2640
+      Width           =   1935
+   End
    Begin VB.CommandButton BtnTSafeArrayPtr 
       Caption         =   "Test SafeArrayPtr"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   3
@@ -30,15 +38,6 @@ Begin VB.Form FMain
    End
    Begin VB.CommandButton BtnTestSAPtr 
       Caption         =   "Test SAPtr"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   2
@@ -47,15 +46,6 @@ Begin VB.Form FMain
    End
    Begin VB.CommandButton BtnTestArrayPointer 
       Caption         =   "Test Array-Pointer"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   1
@@ -64,15 +54,6 @@ Begin VB.Form FMain
    End
    Begin VB.CommandButton BtnTestCharArray 
       Caption         =   "Test Char-Pointer"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
       Height          =   375
       Left            =   240
       TabIndex        =   0
@@ -86,6 +67,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+
+Private Sub BtnTestObjPtr_Click()
+    Form4.Show
+End Sub
 
 Private Sub BtnTestSAPtr_Click()
     ReDim sa(0 To 10) As String

@@ -6,6 +6,15 @@ Begin VB.Form Form1
    ClientLeft      =   45
    ClientTop       =   435
    ClientWidth     =   3990
+   BeginProperty Font 
+      Name            =   "Segoe UI"
+      Size            =   8.25
+      Charset         =   0
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
    Icon            =   "Form1.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -47,6 +56,15 @@ Begin VB.Form Form1
       Width           =   3735
    End
    Begin VB.Frame FrmBuildString 
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   615
       Left            =   120
       TabIndex        =   0

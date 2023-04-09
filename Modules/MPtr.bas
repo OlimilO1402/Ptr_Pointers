@@ -202,8 +202,8 @@ End Sub
 ' ^ ############################## ^ '    Array-Ptr Functions    ' ^ ############################## ^ '
 
 'retrieve the pointer to a function by using FncPtr(Addressof myfunction)
-Public Function FncPtr(ByVal pfn As LongPtr) As LongPtr
-    FncPtr = pfn
+Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
+    FncPtr = PFN
 End Function
 
 ' v ############################## v '    Collection Functions    ' v ############################## v '
@@ -231,11 +231,11 @@ Public Sub Col_SwapItems(col As Collection, ByVal i1 As Long, i2 As Long)
     If i1 <= 0 Or col.Count <= i1 Then Exit Sub
     If i2 <= 0 Or col.Count < i2 Then Exit Sub
     If i1 = i2 Then Exit Sub
-    Dim obj1, obj2
-    If IsObject(col.Item(i1)) Then Set obj1 = col.Item(i1) Else obj1 = col.Item(i1)
-    If IsObject(col.Item(i2)) Then Set obj2 = col.Item(i2) Else obj2 = col.Item(i2)
-    col.Remove i1: col.Add obj2, , i1:     col.Remove i2
-    If i2 < c Then col.Add obj1, , i2 Else col.Add obj1
+    Dim Obj1, Obj2
+    If IsObject(col.Item(i1)) Then Set Obj1 = col.Item(i1) Else Obj1 = col.Item(i1)
+    If IsObject(col.Item(i2)) Then Set Obj2 = col.Item(i2) Else Obj2 = col.Item(i2)
+    col.Remove i1: col.Add Obj2, , i1:     col.Remove i2
+    If i2 < c Then col.Add Obj1, , i2 Else col.Add Obj1
 End Sub
 
 Public Sub Col_MoveUp(col As Collection, ByVal i As Long)
@@ -349,13 +349,21 @@ End Function
 ' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
-    RtlMoveMemory ByVal VarPtr(PtrToObject), p, MPtr.SizeOf_LongPtr
+    Dim obj As Object:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
+    Set PtrToObject = obj: ZeroObject obj
 End Function
 
 Public Sub ZeroObject(obj As Object)
-    RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
+    'RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
+    RtlZeroMemory obj, MPtr.SizeOf_LongPtr
 End Sub
 
+Public Sub AssignSwap(Obj1 As Object, Obj2 As Object)
+    Dim pObj1 As LongPtr: pObj1 = ObjPtr(Obj1)
+    Dim pObj2 As LongPtr: pObj2 = ObjPtr(Obj2)
+    RtlMoveMemory Obj1, pObj2, MPtr.SizeOf_LongPtr
+    RtlMoveMemory Obj2, pObj1, MPtr.SizeOf_LongPtr
+End Sub
 ' ^ ############################## ^ '  Object-WeakPtr Funcs  ' ^ ############################## ^ '
 
 
