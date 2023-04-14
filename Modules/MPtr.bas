@@ -349,7 +349,7 @@ End Function
 ' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
-    Dim obj As Object:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
+    Dim obj As IUnknown:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
     Set PtrToObject = obj: ZeroObject obj
 End Function
 
@@ -358,7 +358,7 @@ Public Sub ZeroObject(obj As Object)
     RtlZeroMemory obj, MPtr.SizeOf_LongPtr
 End Sub
 
-Public Sub AssignSwap(Obj1 As Object, Obj2 As Object)
+Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
     Dim pObj1 As LongPtr: pObj1 = ObjPtr(Obj1)
     Dim pObj2 As LongPtr: pObj2 = ObjPtr(Obj2)
     RtlMoveMemory Obj1, pObj2, MPtr.SizeOf_LongPtr
