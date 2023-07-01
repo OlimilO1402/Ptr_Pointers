@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin VB.Form Form2 
-   Caption         =   "Form2"
+   Caption         =   "Test SafeArrayPtr"
    ClientHeight    =   4215
    ClientLeft      =   120
    ClientTop       =   465
@@ -14,6 +14,7 @@ Begin VB.Form Form2
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   Icon            =   "Form2.frx":0000
    LinkTopic       =   "Form2"
    ScaleHeight     =   4215
    ScaleWidth      =   8070

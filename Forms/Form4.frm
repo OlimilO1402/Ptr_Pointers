@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin VB.Form Form4 
-   Caption         =   "Form4"
+   Caption         =   "Test ObjPtr"
    ClientHeight    =   3015
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   4560
+   ClientWidth     =   4575
    BeginProperty Font 
       Name            =   "Segoe UI"
       Size            =   8.25
@@ -14,9 +14,10 @@ Begin VB.Form Form4
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   Icon            =   "Form4.frx":0000
    LinkTopic       =   "Form4"
    ScaleHeight     =   3015
-   ScaleWidth      =   4560
+   ScaleWidth      =   4575
    StartUpPosition =   3  'Windows-Standard
    Begin VB.CommandButton BtnWeakObjPtrTestAssignSwap 
       Caption         =   "Weak ObjPtr Test AssignSwap"

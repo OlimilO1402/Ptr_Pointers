@@ -25,7 +25,7 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   4
-      Top             =   2640
+      Top             =   2040
       Width           =   1935
    End
    Begin VB.CommandButton BtnTSafeArrayPtr 
@@ -41,7 +41,7 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   2
-      Top             =   2040
+      Top             =   2640
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestArrayPointer 
@@ -68,11 +68,28 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Sub Form_Load()
+    Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
+End Sub
+
+Private Sub BtnTestCharArray_Click()
+    Form1.Show vbModal, Me
+End Sub
+
+Private Sub BtnTSafeArrayPtr_Click()
+    Form2.Show vbModal, Me
+End Sub
+
+Private Sub BtnTestArrayPointer_Click()
+    Form3.Show vbModal, Me
+End Sub
+
 Private Sub BtnTestObjPtr_Click()
     Form4.Show
 End Sub
 
 Private Sub BtnTestSAPtr_Click()
+    
     ReDim sa(0 To 10) As String
     sa(0) = "one"
     sa(1) = "two"
@@ -83,24 +100,4 @@ Private Sub BtnTestSAPtr_Click()
     MsgBox saX(0)
     
     ZeroSAPtr StrArrPtr(saX)
-End Sub
-
-Private Sub BtnTSafeArrayPtr_Click()
-    Form2.Show
-End Sub
-
-Private Sub Form_Load()
-    Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
-End Sub
-
-Private Sub BtnTestCharArray_Click()
-    Form1.Show vbModal, Me
-End Sub
-
-'Private Sub BtnTestByteSwapper_Click()
-'    Form2.Show vbModal, Me
-'End Sub
-
-Private Sub BtnTestArrayPointer_Click()
-    Form3.Show vbModal, Me
 End Sub

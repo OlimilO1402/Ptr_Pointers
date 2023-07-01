@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin VB.Form Form3 
-   Caption         =   "Form3"
+   Caption         =   "Test Array-Pointer"
    ClientHeight    =   3090
    ClientLeft      =   60
    ClientTop       =   450
