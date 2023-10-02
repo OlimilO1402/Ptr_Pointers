@@ -217,9 +217,9 @@ Public Function Col_Contains(col As Collection, Key As String) As Boolean
     On Error GoTo 0
 End Function
 
-Public Function Col_TryAddObject(col As Collection, obj As Object, Key As String) As Boolean
+Public Function Col_TryAddObject(col As Collection, Obj As Object, Key As String) As Boolean
 Try: On Error GoTo Catch
-    col.Add obj, Key
+    col.Add Obj, Key
     Col_TryAddObject = True
 Catch: On Error GoTo 0
 End Function
@@ -349,13 +349,13 @@ End Function
 ' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
-    Dim obj As IUnknown:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
-    Set PtrToObject = obj: ZeroObject obj
+    Dim Obj As IUnknown:  RtlMoveMemory Obj, p, MPtr.SizeOf_LongPtr
+    Set PtrToObject = Obj: ZeroObject Obj
 End Function
 
-Public Sub ZeroObject(obj As Object)
+Public Sub ZeroObject(Obj As Object)
     'RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
-    RtlZeroMemory obj, MPtr.SizeOf_LongPtr
+    RtlZeroMemory Obj, MPtr.SizeOf_LongPtr
 End Sub
 
 Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
@@ -364,6 +364,21 @@ Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
     RtlMoveMemory Obj1, pObj2, MPtr.SizeOf_LongPtr
     RtlMoveMemory Obj2, pObj1, MPtr.SizeOf_LongPtr
 End Sub
+
+Public Function VTablePtr(Obj As Object) As LongPtr
+    RtlMoveMemory VTablePtr, ByVal ObjPtr(Obj), SizeOf_LongPtr
+End Function
+
+Public Property Get ObjectAddressOf(Obj As Object, ByVal Index As Long) As LongPtr
+    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
+    RtlMoveMemory ObjectAddressOf, ByVal pVTable + (7 + Index) * SizeOf_LongPtr, SizeOf_LongPtr
+End Property
+
+Public Property Let ObjectAddressOf(Obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
+    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
+    RtlMoveMemory ByVal pVTable + (7 + Index) * SizeOf_LongPtr, Value, SizeOf_LongPtr
+End Property
+
 ' ^ ############################## ^ '  Object-WeakPtr Funcs  ' ^ ############################## ^ '
 
 

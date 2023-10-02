@@ -19,6 +19,14 @@ Begin VB.Form Form4
    ScaleHeight     =   3015
    ScaleWidth      =   4575
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnChangingClassFuncPtrs 
+      Caption         =   "Changing class-function pointers"
+      Height          =   375
+      Left            =   120
+      TabIndex        =   2
+      Top             =   1320
+      Width           =   3135
+   End
    Begin VB.CommandButton BtnWeakObjPtrTestAssignSwap 
       Caption         =   "Weak ObjPtr Test AssignSwap"
       Height          =   375
@@ -35,6 +43,14 @@ Begin VB.Form Form4
       Top             =   120
       Width           =   3135
    End
+   Begin VB.Label Label1 
+      Caption         =   "output that seems to be impossible . . ."
+      Height          =   375
+      Left            =   120
+      TabIndex        =   3
+      Top             =   1800
+      Width           =   3135
+   End
 End
 Attribute VB_Name = "Form4"
 Attribute VB_GlobalNameSpace = False
@@ -43,7 +59,18 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 Private m_Obj1 As Class1
-'
+Private m_TestObj1 As Test1
+Private m_TestObj2 As Test2
+
+Private Sub Form_Load()
+    Set m_TestObj1 = New Test1
+    Set m_TestObj2 = New Test2
+End Sub
+
+Private Sub BtnChangingClassFuncPtrs_Click()
+    MPtr.ObjectAddressOf(m_TestObj1, 0) = MPtr.ObjectAddressOf(m_TestObj2, 1)
+    Label1.Caption = m_TestObj1.Test1 & " - " & m_TestObj2.Test4
+End Sub
 
 Private Sub BtnWeakObjPtrTest1_Click()
     
