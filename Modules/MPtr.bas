@@ -63,6 +63,15 @@ Public Type TSafeArrayPtr
     pSA()  As TUDTPtr
 End Type
 
+Public Type VBGUID
+    Data1 As Long
+    Data2 As Integer
+    Data3 As Integer
+    Data4(0 To 7) As Byte
+End Type
+
+Public GUID_NULL As VBGUID
+
 #If win64 Then
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
@@ -200,6 +209,18 @@ Public Sub ZeroSAPtr(ByVal pArr As LongPtr)
     RtlZeroMemory ByVal pArr, MPtr.SizeOf_LongPtr
 End Sub
 ' ^ ############################## ^ '    Array-Ptr Functions    ' ^ ############################## ^ '
+
+' v ############################## v '    Array Functions   ' v ############################## v '
+
+Public Function Array_Count(Arr, Optional nDim As Long = 1) As Long
+Try: On Error GoTo Catch
+    Array_Count = UBound(Arr, nDim) - LBound(Arr, nDim)
+    Exit Function
+Catch:
+    Array_Count = 0
+End Function
+
+' ^ ############################## ^ '    Array Functions    ' ^ ############################## ^ '
 
 'retrieve the pointer to a function by using FncPtr(Addressof myfunction)
 Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
