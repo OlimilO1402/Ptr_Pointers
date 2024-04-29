@@ -72,6 +72,11 @@ End Type
 
 Public GUID_NULL As VBGUID
 
+Public Type TCharPointer
+    pudt    As TUDTPtr
+    Chars() As Integer
+End Type
+
 #If win64 Then
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
@@ -728,4 +733,24 @@ Public Sub String_Rotate2(s As String)
 End Sub
 
 ' ^ ############################## ^ '    MByteSwapper Functions    ' ^ ############################## ^ '
+
+' v ############################## v '    CharPointer Functions   ' v ############################## v '
+
+Public Sub New_CharPointer(ByRef this As TCharPointer, ByRef StrVal As String, Optional Base1 As Boolean = False)
+    With this
+        New_UDTPtr .pudt, FADF_AUTO Or FADF_FIXEDSIZE, 2, Len(StrVal), IIf(Base1, 1, 0)
+        With .pudt
+            .pvData = StrPtr(StrVal)
+        End With
+        RtlMoveMemory ByVal ArrPtr(.Chars), ByVal VarPtr(.pudt), 4
+    End With
+End Sub
+
+Public Sub DeleteCharPointer(ByRef this As TCharPointer)
+    With this
+        RtlZeroMemory ByVal ArrPtr(.Chars), 4
+    End With
+End Sub
+
+' ^ ############################## ^ '    CharPointer Functions   ' ^ ############################## ^ '
 
