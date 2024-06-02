@@ -176,6 +176,7 @@ End Type
     Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
     
 #End If
+Private m_col As Collection
 
 ' ^ ############################## ^ '    MByteSwapper Declarations    ' ^ ############################## ^ '
 
@@ -233,19 +234,19 @@ Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
 End Function
 
 ' v ############################## v '    Collection Functions    ' v ############################## v '
-Public Function Col_Contains(col As Collection, Key As String) As Boolean
+Public Function Col_Contains(col As Collection, key As String) As Boolean
     'for this Function all credits go to the incredible www.vb-tec.de alias Jost Schwider
     'you can find the original version of this function here: https://vb-tec.de/collctns.htm
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
-    If IsEmpty(col(Key)) Then: 'DoNothing
+    If IsEmpty(col(key)) Then: 'DoNothing
     Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 
-Public Function Col_TryAddObject(col As Collection, obj As Object, Key As String) As Boolean
+Public Function Col_TryAddObject(col As Collection, Obj As Object, ByVal key As String) As Boolean
 Try: On Error GoTo Catch
-    col.Add obj, Key
+    col.Add Obj, key
     Col_TryAddObject = True
 Catch: On Error GoTo 0
 End Function
@@ -270,6 +271,41 @@ End Sub
 
 Public Sub Col_MoveDown(col As Collection, ByVal i As Long)
     Col_SwapItems col, i, i + 1
+End Sub
+
+Public Sub Col_ToListBox(col As Collection, aLB As ListBox, Optional ByVal addEmptyLineFirst As Boolean = False)
+    Col_ToListControl col, aLB, addEmptyLineFirst
+End Sub
+
+Public Sub Col_ToComboBox(col As Collection, aCB As ComboBox, Optional ByVal addEmptyLineFirst As Boolean = False)
+    Col_ToListControl col, aCB, addEmptyLineFirst
+End Sub
+
+Public Sub Col_ToListControl(col As Collection, aLBCB, Optional ByVal addEmptyLineFirst As Boolean = False)
+    If col Is Nothing Then Exit Sub
+    Dim i As Long, c As Long: c = col.Count: If c = 0 Then Exit Sub
+    Dim vt As VbVarType: vt = VarType(col.Item(1))
+    Dim v, Obj As Object
+    If aLBCB.ListCount Then aLBCB.Clear
+    If addEmptyLineFirst Then aLBCB.AddItem vbNullString
+    Select Case vt
+    Case vbByte, vbInteger, vbLong, vbCurrency, vbDate, vbSingle, vbDouble, vbDecimal, vbString
+        For i = 1 To c
+            'v = col.Item(i)
+            'aLBCB.AddItem v
+            aLBCB.AddItem col.Item(i)
+        Next
+    'Case vbString
+    '    For i = 1 To c
+    '        v = col.Item(i)
+    '        aLBCB.AddItem v
+    '    Next
+    Case vbObject
+        For i = 1 To c
+            Set Obj = col.Item(i)
+            aLBCB.AddItem Obj.ToStr
+        Next
+    End Select
 End Sub
 
 Public Sub Col_Sort(col As Collection)
@@ -325,8 +361,8 @@ Private Sub SwapVar(ByVal i1 As Long, ByVal i2 As Long)
     If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
     Dim Var1: Var1 = m_col.Item(i1)
     Dim Var2: Var2 = m_col.Item(i2)
-    m_col.Remove i1: m_col.Add Obj2, , i1:   m_col.Remove i2
-    If i2 < c Then m_col.Add Obj1, , i2 Else m_col.Add Obj1
+    m_col.Remove i1: m_col.Add Var2, , i1:   m_col.Remove i2
+    If i2 < c Then m_col.Add Var1, , i2 Else m_col.Add Var1
 End Sub
 
 ' The recursive data-independent QuickSort for strings
@@ -519,13 +555,13 @@ End Function
 ' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
-    Dim obj As IUnknown:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
-    Set PtrToObject = obj: ZeroObject obj
+    Dim Obj As IUnknown:  RtlMoveMemory Obj, p, MPtr.SizeOf_LongPtr
+    Set PtrToObject = Obj: ZeroObject Obj
 End Function
 
-Public Sub ZeroObject(obj As Object)
+Public Sub ZeroObject(Obj As Object)
     'RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
-    RtlZeroMemory obj, MPtr.SizeOf_LongPtr
+    RtlZeroMemory Obj, MPtr.SizeOf_LongPtr
 End Sub
 
 Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
@@ -535,17 +571,17 @@ Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
     RtlMoveMemory Obj2, pObj1, MPtr.SizeOf_LongPtr
 End Sub
 
-Public Function VTablePtr(obj As Object) As LongPtr
-    RtlMoveMemory VTablePtr, ByVal ObjPtr(obj), SizeOf_LongPtr
+Public Function VTablePtr(Obj As Object) As LongPtr
+    RtlMoveMemory VTablePtr, ByVal ObjPtr(Obj), SizeOf_LongPtr
 End Function
 
-Public Property Get ObjectAddressOf(obj As Object, ByVal Index As Long) As LongPtr
-    Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
+Public Property Get ObjectAddressOf(Obj As Object, ByVal Index As Long) As LongPtr
+    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
     RtlMoveMemory ObjectAddressOf, ByVal pVTable + (7 + Index) * SizeOf_LongPtr, SizeOf_LongPtr
 End Property
 
-Public Property Let ObjectAddressOf(obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
-    Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
+Public Property Let ObjectAddressOf(Obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
+    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
     RtlMoveMemory ByVal pVTable + (7 + Index) * SizeOf_LongPtr, Value, SizeOf_LongPtr
 End Property
 
