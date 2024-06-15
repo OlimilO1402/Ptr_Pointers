@@ -269,6 +269,15 @@ Try: On Error GoTo Catch
 Catch: On Error GoTo 0
 End Function
 
+Public Sub Col_Remove(Col As Collection, Obj As Object)
+    Dim o As Object
+    For Each o In Col
+        If o.IsSame(Obj) Then 'Object needs Public Function IsSame(other) As Boolean
+            If Col_Contains(Col, Obj.Key) Then Col.Remove Obj.Key 'Object needs Public Property Key As String
+        End If
+    Next
+End Sub
+
 Public Sub Col_SwapItems(Col As Collection, ByVal i1 As Long, i2 As Long)
     Dim c As Long: c = Col.Count
     If c = 0 Then Exit Sub
