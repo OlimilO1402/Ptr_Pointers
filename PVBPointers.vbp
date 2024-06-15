@@ -12,6 +12,7 @@ Class=Class1; Classes\Class1.cls
 Class=StopWatch; ..\Sys_StopWatch\Classes\StopWatch.cls
 Class=Test1; Classes\Test1.cls
 Class=Test2; Classes\Test2.cls
+Form=Forms\Form5.frm
 ResFile32="Resources\MyRes.res"
 IconForm="FMain"
 Startup="FMain"

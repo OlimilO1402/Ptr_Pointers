@@ -20,12 +20,20 @@ Begin VB.Form FMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton Command1 
+      Caption         =   "Test VB.Collection"
+      Height          =   375
+      Left            =   240
+      TabIndex        =   5
+      Top             =   2640
+      Width           =   1935
+   End
    Begin VB.CommandButton BtnTestObjPtr 
       Caption         =   "Test ObjPtr"
       Height          =   375
       Left            =   240
       TabIndex        =   4
-      Top             =   2040
+      Top             =   1680
       Width           =   1935
    End
    Begin VB.CommandButton BtnTSafeArrayPtr 
@@ -33,7 +41,7 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   3
-      Top             =   840
+      Top             =   720
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestSAPtr 
@@ -41,7 +49,7 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   2
-      Top             =   2640
+      Top             =   2160
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestArrayPointer 
@@ -49,7 +57,7 @@ Begin VB.Form FMain
       Height          =   375
       Left            =   240
       TabIndex        =   1
-      Top             =   1440
+      Top             =   1200
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestCharArray 

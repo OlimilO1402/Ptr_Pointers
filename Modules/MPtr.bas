@@ -176,7 +176,7 @@ End Type
     Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
     
 #End If
-Private m_col As Collection
+Private m_Col As Collection
 
 ' ^ ############################## ^ '    MByteSwapper Declarations    ' ^ ############################## ^ '
 
@@ -234,222 +234,243 @@ Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
 End Function
 
 ' v ############################## v '    Collection Functions    ' v ############################## v '
-Public Function Col_Contains(col As Collection, key As String) As Boolean
+Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     'for this Function all credits go to the incredible www.vb-tec.de alias Jost Schwider
     'you can find the original version of this function here: https://vb-tec.de/collctns.htm
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
-    If IsEmpty(col(key)) Then: 'DoNothing
+    If IsEmpty(Col(Key)) Then: 'DoNothing
     Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 
-Public Function Col_TryAddObject(col As Collection, Obj As Object, ByVal key As String) As Boolean
+Public Function Col_Add(Col As Collection, Obj As Object) As Object
+    Set Col_Add = Obj:  Col.Add Obj
+End Function
+
+Public Function Col_AddKey(Col As Collection, Obj As Object) As Object
+    Set Col_AddKey = Obj:  Col.Add Obj, Obj.Key ' the object needs to have a Public Function Key As String
+End Function
+
+Public Function Col_AddOrGet(Col As Collection, Obj As Object) As Object
+    Dim Key As String: Key = Obj.Key ' the object needs to have a Public Function Key As String
+    If Col_Contains(Col, Key) Then
+        Set Col_AddOrGet = Col.Item(Key)
+    Else
+        Set Col_AddOrGet = Obj
+        Col.Add Obj, Key
+    End If
+End Function
+
+Public Function Col_TryAddObject(Col As Collection, Obj As Object, ByVal Key As String) As Boolean
 Try: On Error GoTo Catch
-    col.Add Obj, key
+    Col.Add Obj, Key
     Col_TryAddObject = True
 Catch: On Error GoTo 0
 End Function
 
-Public Sub Col_SwapItems(col As Collection, ByVal i1 As Long, i2 As Long)
-    Dim c As Long: c = col.Count
+Public Sub Col_SwapItems(Col As Collection, ByVal i1 As Long, i2 As Long)
+    Dim c As Long: c = Col.Count
     If c = 0 Then Exit Sub
     If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
     If i1 <= 0 Or c <= i1 Then Exit Sub
     If i2 <= 0 Or c < i2 Then Exit Sub
     If i1 = i2 Then Exit Sub
     Dim Obj1, Obj2
-    If IsObject(col.Item(i1)) Then Set Obj1 = col.Item(i1) Else Obj1 = col.Item(i1)
-    If IsObject(col.Item(i2)) Then Set Obj2 = col.Item(i2) Else Obj2 = col.Item(i2)
-    col.Remove i1: col.Add Obj2, , i1:     col.Remove i2
-    If i2 < c Then col.Add Obj1, , i2 Else col.Add Obj1
+    If IsObject(Col.Item(i1)) Then Set Obj1 = Col.Item(i1) Else Obj1 = Col.Item(i1)
+    If IsObject(Col.Item(i2)) Then Set Obj2 = Col.Item(i2) Else Obj2 = Col.Item(i2)
+    Col.Remove i1: Col.Add Obj2, , i1:     Col.Remove i2
+    If i2 < c Then Col.Add Obj1, , i2 Else Col.Add Obj1
 End Sub
 
-Public Sub Col_MoveUp(col As Collection, ByVal i As Long)
-    Col_SwapItems col, i, i - 1
+Public Sub Col_MoveUp(Col As Collection, ByVal i As Long)
+    Col_SwapItems Col, i, i - 1
 End Sub
 
-Public Sub Col_MoveDown(col As Collection, ByVal i As Long)
-    Col_SwapItems col, i, i + 1
+Public Sub Col_MoveDown(Col As Collection, ByVal i As Long)
+    Col_SwapItems Col, i, i + 1
 End Sub
 
-Public Sub Col_ToListBox(col As Collection, aLB As ListBox, Optional ByVal addEmptyLineFirst As Boolean = False)
-    Col_ToListControl col, aLB, addEmptyLineFirst
+Public Sub Col_ToListBox(Col As Collection, aLB As ListBox, Optional ByVal addEmptyLineFirst As Boolean = False, Optional ByVal doPtrToItemData As Boolean = False)
+    Col_ToListCtrl Col, aLB, addEmptyLineFirst
 End Sub
 
-Public Sub Col_ToComboBox(col As Collection, aCB As ComboBox, Optional ByVal addEmptyLineFirst As Boolean = False)
-    Col_ToListControl col, aCB, addEmptyLineFirst
+Public Sub Col_ToComboBox(Col As Collection, aCB As ComboBox, Optional ByVal addEmptyLineFirst As Boolean = False, Optional ByVal doPtrToItemData As Boolean = False)
+    Col_ToListCtrl Col, aCB, addEmptyLineFirst
 End Sub
 
-Public Sub Col_ToListControl(col As Collection, aLBCB, Optional ByVal addEmptyLineFirst As Boolean = False)
-    If col Is Nothing Then Exit Sub
-    Dim i As Long, c As Long: c = col.Count: If c = 0 Then Exit Sub
-    Dim vt As VbVarType: vt = VarType(col.Item(1))
+Public Sub Col_ToListCtrl(Col As Collection, ComboBoxOrListBox, Optional ByVal addEmptyLineFirst As Boolean = False, Optional ByVal doPtrToItemData As Boolean = False)
+    If Col Is Nothing Then Exit Sub
+    Dim i As Long, c As Long: c = Col.Count: If c = 0 Then Exit Sub
+    Dim vt As VbVarType: vt = VarType(Col.Item(1))
     Dim v, Obj As Object
-    If aLBCB.ListCount Then aLBCB.Clear
-    If addEmptyLineFirst Then aLBCB.AddItem vbNullString
-    Select Case vt
-    Case vbByte, vbInteger, vbLong, vbCurrency, vbDate, vbSingle, vbDouble, vbDecimal, vbString
-        For i = 1 To c
-            'v = col.Item(i)
-            'aLBCB.AddItem v
-            aLBCB.AddItem col.Item(i)
-        Next
-    'Case vbString
-    '    For i = 1 To c
-    '        v = col.Item(i)
-    '        aLBCB.AddItem v
-    '    Next
-    Case vbObject
-        For i = 1 To c
-            Set Obj = col.Item(i)
-            aLBCB.AddItem Obj.ToStr
-        Next
-    End Select
+    With ComboBoxOrListBox
+        If .ListCount Then .Clear
+        If addEmptyLineFirst Then .AddItem vbNullString
+        Select Case vt
+        Case vbByte, vbInteger, vbLong, vbCurrency, vbDate, vbSingle, vbDouble, vbDecimal, vbString
+            For i = 1 To c
+                .AddItem Col.Item(i)
+            Next
+        Case vbObject
+            For i = 1 To c
+                Set Obj = Col.Item(i)
+                .AddItem Obj.ToStr ' the object needs to have a Public Function ToStr As String
+                If doPtrToItemData Then .ItemData(i - 1) = Obj.Ptr ' and a Public Function Ptr As LongPtr
+            Next
+        End Select
+    End With
 End Sub
 
-Public Sub Col_Sort(col As Collection)
-    Set m_col = col
-    Dim c As Long: c = m_col.Count
-    If c = 0 Then: Set m_col = Nothing: Exit Sub
-    Dim vt As VbVarType: vt = VarType(m_col.Item(1))
+Public Property Get Col_ObjectFromListCtrl(Col As Collection, ComboBoxOrListBox, i_out As Long) As Object
+    i_out = ComboBoxOrListBox.ListIndex
+    If i_out < 0 Then Exit Property
+    Dim Key As String: Key = ComboBoxOrListBox.ItemData(i_out)
+    If Col_Contains(Col, Key) Then Set Col_ObjectFromListCtrl = Col.Item(Key)
+End Property
+
+Public Sub Col_Sort(Col As Collection)
+    Set m_Col = Col
+    Dim c As Long: c = m_Col.Count
+    If c = 0 Then: Set m_Col = Nothing: Exit Sub
+    Dim vt As VbVarType: vt = VarType(m_Col.Item(1))
     Select Case vt
     Case vbByte, vbInteger, vbLong, vbCurrency, vbDate, vbSingle, vbDouble, vbDecimal
-        Call QuickSortVar(1, c)
+        Col_QuickSortVar 1, c
     Case vbString
-        Call QuickSortStr(1, c)
+        Col_QuickSortStr 1, c
     Case vbObject
-        Call QuickSortObj(1, c)
+        Col_QuickSortObj 1, c
     End Select
-    Set m_col = Nothing
+    Set m_Col = Nothing
 End Sub
 
 ' The recursive data-independent QuickSort for primitive data-variables
-Private Sub QuickSortVar(ByVal i1 As Long, ByVal i2 As Long)
+Private Sub Col_QuickSortVar(ByVal i1 As Long, ByVal i2 As Long)
     Dim T As Long
     If i2 > i1 Then
-        T = DivideVar(i1, i2)
-        Call QuickSortVar(i1, T - 1)
-        Call QuickSortVar(T + 1, i2)
+        T = Col_DivideVar(i1, i2)
+        Col_QuickSortVar i1, T - 1
+        Col_QuickSortVar T + 1, i2
     End If
 End Sub
 
-Private Function DivideVar(ByVal i1 As Long, ByVal i2 As Long) As Long
+Private Function Col_DivideVar(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim i As Long: i = i1 - 1
     Dim j As Long: j = i2
     Dim p As Long: p = j
     Do
         Do
             i = i + 1
-        Loop While (CompareVar(i, p) < 0)
+        Loop While (Col_CompareVar(i, p) < 0)
         Do
             j = j - 1
-        Loop While ((i1 < j) And (CompareVar(p, j) < 0))
-        If i < j Then Call SwapVar(i, j)
+        Loop While ((i1 < j) And (Col_CompareVar(p, j) < 0))
+        If i < j Then Col_SwapVar i, j
     Loop While (i < j)
-    Call SwapVar(i, p)
-    DivideVar = i
+    Col_SwapVar i, p
+    Col_DivideVar = i
 End Function
 
-Private Function CompareVar(ByVal i1 As Long, ByVal i2 As Long) As Variant
-    CompareVar = m_col.Item(i1) - m_col.Item(i2)
+Private Function Col_CompareVar(ByVal i1 As Long, ByVal i2 As Long) As Variant
+    Col_CompareVar = m_Col.Item(i1) - m_Col.Item(i2)
 End Function
 
-Private Sub SwapVar(ByVal i1 As Long, ByVal i2 As Long)
+Private Sub Col_SwapVar(ByVal i1 As Long, ByVal i2 As Long)
     If i1 = i2 Then Exit Sub
-    Dim c As Long: c = m_col.Count
+    Dim c As Long: c = m_Col.Count
     If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
-    Dim Var1: Var1 = m_col.Item(i1)
-    Dim Var2: Var2 = m_col.Item(i2)
-    m_col.Remove i1: m_col.Add Var2, , i1:   m_col.Remove i2
-    If i2 < c Then m_col.Add Var1, , i2 Else m_col.Add Var1
+    Dim Var1: Var1 = m_Col.Item(i1)
+    Dim Var2: Var2 = m_Col.Item(i2)
+    m_Col.Remove i1: m_Col.Add Var2, , i1:   m_Col.Remove i2
+    If i2 < c Then m_Col.Add Var1, , i2 Else m_Col.Add Var1
 End Sub
 
 ' The recursive data-independent QuickSort for strings
-Private Sub QuickSortStr(ByVal i1 As Long, ByVal i2 As Long)
+Private Sub Col_QuickSortStr(ByVal i1 As Long, ByVal i2 As Long)
     Dim T As Long
     If i1 < i2 Then
-        T = divideStr(i1, i2)
-        Call QuickSortStr(i1, T - 1)
-        Call QuickSortStr(T + 1, i2)
+        T = Col_DivideStr(i1, i2)
+        Col_QuickSortStr i1, T - 1
+        Col_QuickSortStr T + 1, i2
     End If
 End Sub
 
-Private Function divideStr(ByVal i1 As Long, ByVal i2 As Long) As Long
+Private Function Col_DivideStr(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim i As Long: i = i1 - 1
     Dim j As Long: j = i2
     Dim p As Long: p = j
     Do
         Do
             i = i + 1
-        Loop While (CompareStr(i, p) < 0)
+        Loop While (Col_CompareStr(i, p) < 0)
         Do
             j = j - 1
-        Loop While ((i1 < j) And (CompareStr(p, j) < 0))
-        If i < j Then Call SwapStr(i, j)
+        Loop While ((i1 < j) And (Col_CompareStr(p, j) < 0))
+        If i < j Then Col_SwapStr i, j
     Loop While (i < j)
-    Call SwapStr(i, p)
-    divideStr = i
+    Col_SwapStr i, p
+    Col_DivideStr = i
 End Function
 
-Private Function CompareStr(ByVal i1 As Long, ByVal i2 As Long)
-    CompareStr = StrComp(m_col.Item(i1), m_col.Item(i2))
+Private Function Col_CompareStr(ByVal i1 As Long, ByVal i2 As Long)
+    Col_CompareStr = StrComp(m_Col.Item(i1), m_Col.Item(i2))
     'Dim Str1 As String: Str1 = m_col.Item(i1)
     'Dim Str2 As String: Str2 = m_col.Item(i2)
     'CompareStr = StrComp(Str1, Str2)
 End Function
 
-Private Sub SwapStr(ByVal i1 As Long, ByVal i2 As Long)
+Private Sub Col_SwapStr(ByVal i1 As Long, ByVal i2 As Long)
     If i1 = i2 Then Exit Sub
-    Dim c As Long: c = m_col.Count
+    Dim c As Long: c = m_Col.Count
     If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
-    Dim Str1 As String: Str1 = m_col.Item(i1)
-    Dim Str2 As String: Str2 = m_col.Item(i2)
-    m_col.Remove i1: m_col.Add Str2, , i1:   m_col.Remove i2
-    If i2 < c Then m_col.Add Str1, , i2 Else m_col.Add Str1
+    Dim Str1 As String: Str1 = m_Col.Item(i1)
+    Dim Str2 As String: Str2 = m_Col.Item(i2)
+    m_Col.Remove i1: m_Col.Add Str2, , i1:   m_Col.Remove i2
+    If i2 < c Then m_Col.Add Str1, , i2 Else m_Col.Add Str1
 End Sub
 
 ' The recursive data-independent QuickSort for objects
-Private Sub QuickSortObj(ByVal i1 As Long, ByVal i2 As Long)
+Private Sub Col_QuickSortObj(ByVal i1 As Long, ByVal i2 As Long)
     Dim T As Long
     If i2 > i1 Then
-        T = divideObj(i1, i2)
-        Call QuickSortObj(i1, T - 1)
-        Call QuickSortObj(T + 1, i2)
+        T = Col_DivideObj(i1, i2)
+        Col_QuickSortObj i1, T - 1
+        Col_QuickSortObj T + 1, i2
     End If
 End Sub
 
-Private Function divideObj(ByVal i1 As Long, ByVal i2 As Long) As Long
+Private Function Col_DivideObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim i As Long: i = i1 - 1
     Dim j As Long: j = i2
     Dim p As Long: p = j
     Do
         Do
             i = i + 1
-        Loop While (CompareObj(i, p) < 0)
+        Loop While (Col_CompareObj(i, p) < 0)
         Do
             j = j - 1
-        Loop While ((i1 < j) And (CompareObj(p, j) < 0))
-        If i < j Then Call SwapObj(i, j)
+        Loop While ((i1 < j) And (Col_CompareObj(p, j) < 0))
+        If i < j Then Col_SwapObj i, j
     Loop While (i < j)
-    Call SwapObj(i, p)
-    divideObj = i
+    Col_SwapObj i, p
+    Col_DivideObj = i
 End Function
 
-Private Function CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
-    Dim Obj1 As Object: Set Obj1 = m_col.Item(i1)
-    Dim Obj2 As Object: Set Obj2 = m_col.Item(i2)
-    CompareObj = Obj1.Compare(Obj2)
+Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
+    Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
+    Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
+    Col_CompareObj = Obj1.compare(Obj2)
 End Function
 
-Private Sub SwapObj(ByVal i1 As Long, ByVal i2 As Long)
+Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
     If i1 = i2 Then Exit Sub
-    Dim c As Long: c = m_col.Count
+    Dim c As Long: c = m_Col.Count
     If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
-    Dim Obj1 As Object: Set Obj1 = m_col.Item(i1)
-    Dim Obj2 As Object: Set Obj2 = m_col.Item(i2)
-    m_col.Remove i1: m_col.Add Obj2, , i1:   m_col.Remove i2
-    If i2 < c Then m_col.Add Obj1, , i2 Else m_col.Add Obj1
+    Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
+    Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
+    m_Col.Remove i1: m_Col.Add Obj2, , i1:   m_Col.Remove i2
+    If i2 < c Then m_Col.Add Obj1, , i2 Else m_Col.Add Obj1
 End Sub
 
 ' ^ ############################## ^ '    Collection Functions    ' ^ ############################## ^ '
