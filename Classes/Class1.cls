@@ -14,8 +14,28 @@ Attribute VB_Exposed = False
 Option Explicit
 
 'just a dummy-class
-Public Value As Double
+Private m_Value As Double
 
-Public Function ToStr()
-    ToStr = CStr(Value)
+Friend Sub New_(ByVal Value As Double)
+    m_Value = Value
+End Sub
+
+Public Property Get Value() As Double
+    Value = m_Value
+End Property
+
+Public Property Get Ptr() As LongPtr
+    Ptr = ObjPtr(Me)
+End Property
+
+Public Property Get Key() As String
+    Key = Ptr
+End Property
+
+Public Function ToStr() As String
+    ToStr = Format(m_Value, "###,###,###,##0.000")
+End Function
+
+Public Function Compare(other As Class1) As Long
+    Compare = Me.Value - other.Value
 End Function

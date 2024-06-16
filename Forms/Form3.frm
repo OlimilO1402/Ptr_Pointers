@@ -66,19 +66,19 @@ Private Type TAnyType
 End Type
 
 Private Sub Command1_Click()
-    Call TestLongArray
+    TestLongArray
 End Sub
 
 Private Sub Command2_Click()
-    Call TestStringArray
+    TestStringArray
 End Sub
 
 Private Sub Command3_Click()
-    Call TestUDTypeArray
+    TestUDTypeArray
 End Sub
 
 Private Sub Command4_Click()
-    Call TestObjectArray
+    TestObjectArray
 End Sub
 
 Private Sub TestLongArray()
@@ -100,7 +100,7 @@ Private Sub TestLongArray()
     'beide Arrays zu löschen, bzw den Speicher wieder frei zu geben.
     'entweder wieder über das Property, oder mit einer Nuller-Funktion
     'SAPtr(ArrPtr(lngArr2)) = 0
-    Call ZeroSAPtr(ArrPtr(lngArr2))
+    ZeroSAPtr ArrPtr(lngArr2)
 End Sub
 
 Private Sub TestStringArray()
@@ -122,7 +122,7 @@ Private Sub TestStringArray()
     'beide Arrays zu löschen, bzw den Speicher wieder frei zu geben.
     'entweder wieder über das Property, oder mit einer Nuller-Funktion
     'SAPtr(StrArrPtr(strArr2)) = 0
-    Call ZeroSAPtr(StrArrPtr(strArr2))
+    ZeroSAPtr StrArrPtr(strArr2)
 End Sub
 
 Private Sub TestUDTypeArray()
@@ -150,7 +150,7 @@ Private Sub TestUDTypeArray()
     'beide Arrays zu löschen, bzw den Speicher wieder frei zu geben.
     'entweder wieder über das Property, oder mit einer Nuller-Funktion
     'SAPtr(StrArrPtr(strArr2)) = 0
-    Call ZeroSAPtr(ArrPtr(udtArr2))
+    ZeroSAPtr ArrPtr(udtArr2)
 End Sub
 
 Private Function TAnyTypeToStr(A As TAnyType) As String
@@ -164,8 +164,8 @@ End Function
 
 Private Sub TestObjectArray()
     ReDim objArr1(0 To 1) As Class1
-    Set objArr1(0) = New_Class1(123456789.123456)
-    Set objArr1(1) = New_Class1(987654321.987654)
+    Set objArr1(0) = MNew.Class1(123456789.123456)
+    Set objArr1(1) = MNew.Class1(987654321.987654)
     
     'der Zeiger wird von objArr1 ausgelesen und in objArr2 hineinkopiert,
     'das manipulierte Array ist objArr2
@@ -183,10 +183,10 @@ Private Sub TestObjectArray()
     'beide Arrays zu löschen, bzw den Speicher wieder frei zu geben.
     'entweder wieder über das Property, oder mit einer Nuller-Funktion
     'SAPtr(StrArrPtr(strArr2)) = 0
-    Call ZeroSAPtr(ArrPtr(objArr2))
+    ZeroSAPtr ArrPtr(objArr2)
 
 End Sub
-
-Public Function New_Class1(ByVal aValue As Double) As Class1
-    Set New_Class1 = New Class1: New_Class1.Value = aValue
-End Function
+'
+'Public Function New_Class1(ByVal aValue As Double) As Class1
+'    Set New_Class1 = New Class1: New_Class1.Value = aValue
+'End Function

@@ -7,7 +7,7 @@ Begin VB.Form FMain
    ClientWidth     =   4560
    BeginProperty Font 
       Name            =   "Segoe UI"
-      Size            =   8.25
+      Size            =   9
       Charset         =   0
       Weight          =   400
       Underline       =   0   'False
@@ -20,52 +20,52 @@ Begin VB.Form FMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
-   Begin VB.CommandButton Command1 
+   Begin VB.CommandButton BtnTestVBCollection 
       Caption         =   "Test VB.Collection"
       Height          =   375
-      Left            =   240
+      Left            =   120
       TabIndex        =   5
-      Top             =   2640
+      Top             =   2520
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestObjPtr 
       Caption         =   "Test ObjPtr"
       Height          =   375
-      Left            =   240
+      Left            =   120
       TabIndex        =   4
-      Top             =   1680
+      Top             =   1560
       Width           =   1935
    End
    Begin VB.CommandButton BtnTSafeArrayPtr 
       Caption         =   "Test SafeArrayPtr"
       Height          =   375
-      Left            =   240
+      Left            =   120
       TabIndex        =   3
-      Top             =   720
+      Top             =   600
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestSAPtr 
       Caption         =   "Test SAPtr"
       Height          =   375
-      Left            =   240
+      Left            =   120
       TabIndex        =   2
-      Top             =   2160
+      Top             =   2040
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestArrayPointer 
       Caption         =   "Test Array-Pointer"
       Height          =   375
-      Left            =   240
+      Left            =   120
       TabIndex        =   1
-      Top             =   1200
+      Top             =   1080
       Width           =   1935
    End
    Begin VB.CommandButton BtnTestCharArray 
       Caption         =   "Test Char-Pointer"
       Height          =   375
-      Left            =   240
+      Left            =   120
       TabIndex        =   0
-      Top             =   240
+      Top             =   120
       Width           =   1935
    End
 End
@@ -109,3 +109,9 @@ Private Sub BtnTestSAPtr_Click()
     
     ZeroSAPtr StrArrPtr(saX)
 End Sub
+
+Private Sub BtnTestVBCollection_Click()
+    Form5.Show vbModal, Me
+End Sub
+
+

@@ -252,13 +252,13 @@ Private Sub BtnCharPtrWalk_Click()
     
     Dim i As Long
     Dim c As Integer
-    Dim cp As TCharPointer: Call New_CharPointer(cp, mStrVal)
+    Dim cp As MPtr.TCharPointer: MPtr.New_CharPointer cp, mStrVal
     For i = 1 To Len(mStrVal)
         c = cp.Chars(i)
     Next
-    Call DeleteCharPointer(cp)
+    DeleteCharPointer cp
     
-    Call MessStop(mp)
+    MessStop mp
     
 End Sub
 
@@ -267,7 +267,7 @@ Private Sub BtnWalkBArrAnsi_Click()
     If LenB(mStrVal) = 0 Then Call BuildString
     
     Dim mp As MousePointerConstants
-    Call Start(mp)
+    Start mp
     
     Dim i As Long
     Dim c As Byte
@@ -277,16 +277,16 @@ Private Sub BtnWalkBArrAnsi_Click()
         c = bArray(i)
     Next
     
-    Call MessStop(mp)
+    MessStop mp
 
 End Sub
 
 Private Sub BtnWalkBArrUnic_Click()
     
-    If LenB(mStrVal) = 0 Then Call BuildString
+    If LenB(mStrVal) = 0 Then BuildString
     
     Dim mp As MousePointerConstants
-    Call Start(mp)
+    Start mp
     
     Dim i As Long
     Dim c As Byte
@@ -296,7 +296,7 @@ Private Sub BtnWalkBArrUnic_Click()
         c = bArray(i)
     Next
     
-    Call MessStop(mp)
+    MessStop mp
 
 End Sub
 

@@ -248,6 +248,11 @@ Public Function Col_Add(Col As Collection, Obj As Object) As Object
     Set Col_Add = Obj:  Col.Add Obj
 End Function
 
+'Public Function Col_Add(Col As Collection, Value)
+'   'Nope just use eiter "Col.Add Value" or Col.Add Value, CStr(Value)
+'    Col_AddV = Value:   Col.Add Value
+'End Function
+
 Public Function Col_AddKey(Col As Collection, Obj As Object) As Object
     Set Col_AddKey = Obj:  Col.Add Obj, Obj.Key ' the object needs to have a Public Function Key As String
 End Function
@@ -272,8 +277,8 @@ End Function
 Public Sub Col_Remove(Col As Collection, Obj As Object)
     Dim o As Object
     For Each o In Col
-        If o.IsSame(Obj) Then 'Object needs Public Function IsSame(other) As Boolean
-            If Col_Contains(Col, Obj.Key) Then Col.Remove Obj.Key 'Object needs Public Property Key As String
+        If o.IsSame(Obj) Then 'Obj needs Public Function IsSame(other) As Boolean
+            If Col_Contains(Col, Obj.Key) Then Col.Remove Obj.Key 'Obj needs Public Property Key As String
         End If
     Next
 End Sub
@@ -469,7 +474,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.compare(Obj2)
+    Col_CompareObj = Obj1.Compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
