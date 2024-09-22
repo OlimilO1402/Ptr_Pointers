@@ -21,11 +21,11 @@ Public Enum SAFeature
     FADF_RESERVED = &HF008  ' Bits reserved for future use.
 End Enum
 
-#If VBA7 = 0 Then
+'#If VBA7 = 0 Then
     Public Enum LongPtr
         [_]
     End Enum
-#End If
+'#End If
 '#If Win64 = 0 Then
 '    Public Enum LongLong
 '        [_]
@@ -81,7 +81,7 @@ End Type
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
 #Else
-    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
+    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare Sub PutMemArr Lib "msvbvm60" Alias "PutMem4" (ByRef Dst As Any, ByVal src As LongPtr)
 #End If
 
@@ -173,7 +173,7 @@ End Type
     Public Declare Sub SBO_Rotate4 Lib "SwapByteOrder" Alias "SwapByteOrder32" (ByRef Ptr As Any)
     Public Declare Sub SBO_Rotate8 Lib "SwapByteOrder" Alias "SwapByteOrder64" (ByRef Ptr As Any)
     Public Declare Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef Value() As Any) As Long
-    Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
+    Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef arr() As Any, ByRef udtDescription() As Integer)
     
 #End If
 Private m_Col As Collection
@@ -218,9 +218,9 @@ End Sub
 
 ' v ############################## v '    Array Functions   ' v ############################## v '
 
-Public Function Array_Count(Arr, Optional nDim As Long = 1) As Long
+Public Function Array_Count(arr, Optional nDim As Long = 1) As Long
 Try: On Error GoTo Catch
-    Array_Count = UBound(Arr, nDim) - LBound(Arr, nDim)
+    Array_Count = UBound(arr, nDim) - LBound(arr, nDim)
     Exit Function
 Catch:
     Array_Count = 0
@@ -240,12 +240,12 @@ Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.Number = 0)
+    Col_Contains = (Err.number = 0)
     On Error GoTo 0
 End Function
 
-Public Function Col_Add(Col As Collection, Obj As Object) As Object
-    Set Col_Add = Obj:  Col.Add Obj
+Public Function Col_Add(Col As Collection, obj As Object) As Object
+    Set Col_Add = obj:  Col.Add obj
 End Function
 
 'Public Function Col_Add(Col As Collection, Value)
@@ -253,32 +253,32 @@ End Function
 '    Col_AddV = Value:   Col.Add Value
 'End Function
 
-Public Function Col_AddKey(Col As Collection, Obj As Object) As Object
-    Set Col_AddKey = Obj:  Col.Add Obj, Obj.Key ' the object needs to have a Public Function Key As String
+Public Function Col_AddKey(Col As Collection, obj As Object) As Object
+    Set Col_AddKey = obj:  Col.Add obj, obj.Key ' the object needs to have a Public Function Key As String
 End Function
 
-Public Function Col_AddOrGet(Col As Collection, Obj As Object) As Object
-    Dim Key As String: Key = Obj.Key ' the object needs to have a Public Function Key As String
+Public Function Col_AddOrGet(Col As Collection, obj As Object) As Object
+    Dim Key As String: Key = obj.Key ' the object needs to have a Public Function Key As String
     If Col_Contains(Col, Key) Then
         Set Col_AddOrGet = Col.Item(Key)
     Else
-        Set Col_AddOrGet = Obj
-        Col.Add Obj, Key
+        Set Col_AddOrGet = obj
+        Col.Add obj, Key
     End If
 End Function
 
-Public Function Col_TryAddObject(Col As Collection, Obj As Object, ByVal Key As String) As Boolean
+Public Function Col_TryAddObject(Col As Collection, obj As Object, ByVal Key As String) As Boolean
 Try: On Error GoTo Catch
-    Col.Add Obj, Key
+    Col.Add obj, Key
     Col_TryAddObject = True
 Catch: On Error GoTo 0
 End Function
 
-Public Sub Col_Remove(Col As Collection, Obj As Object)
+Public Sub Col_Remove(Col As Collection, obj As Object)
     Dim o As Object
     For Each o In Col
-        If o.IsSame(Obj) Then 'Obj needs Public Function IsSame(other) As Boolean
-            If Col_Contains(Col, Obj.Key) Then Col.Remove Obj.Key 'Obj needs Public Property Key As String
+        If o.IsSame(obj) Then 'Obj needs Public Function IsSame(other) As Boolean
+            If Col_Contains(Col, obj.Key) Then Col.Remove obj.Key 'Obj needs Public Property Key As String
         End If
     Next
 End Sub
@@ -317,7 +317,7 @@ Public Sub Col_ToListCtrl(Col As Collection, ComboBoxOrListBox, Optional ByVal a
     If Col Is Nothing Then Exit Sub
     Dim i As Long, c As Long: c = Col.Count: If c = 0 Then Exit Sub
     Dim vt As VbVarType: vt = VarType(Col.Item(1))
-    Dim v, Obj As Object
+    Dim v, obj As Object
     With ComboBoxOrListBox
         If .ListCount Then .Clear
         If addEmptyLineFirst Then .AddItem vbNullString
@@ -328,9 +328,9 @@ Public Sub Col_ToListCtrl(Col As Collection, ComboBoxOrListBox, Optional ByVal a
             Next
         Case vbObject
             For i = 1 To c
-                Set Obj = Col.Item(i)
-                .AddItem Obj.ToStr ' the object needs to have a Public Function ToStr As String
-                If doPtrToItemData Then .ItemData(i - 1) = Obj.Ptr ' and a Public Function Ptr As LongPtr
+                Set obj = Col.Item(i)
+                .AddItem obj.ToStr ' the object needs to have a Public Function ToStr As String
+                If doPtrToItemData Then .ItemData(i - 1) = obj.Ptr ' and a Public Function Ptr As LongPtr
             Next
         End Select
     End With
@@ -474,7 +474,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.Compare(Obj2)
+    Col_CompareObj = Obj1.compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
@@ -590,13 +590,13 @@ End Function
 ' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
-    Dim Obj As IUnknown:  RtlMoveMemory Obj, p, MPtr.SizeOf_LongPtr
-    Set PtrToObject = Obj: ZeroObject Obj
+    Dim obj As IUnknown:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
+    Set PtrToObject = obj: ZeroObject obj
 End Function
 
-Public Sub ZeroObject(Obj As Object)
+Public Sub ZeroObject(obj As Object)
     'RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
-    RtlZeroMemory Obj, MPtr.SizeOf_LongPtr
+    RtlZeroMemory obj, MPtr.SizeOf_LongPtr
 End Sub
 
 Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
@@ -606,17 +606,17 @@ Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
     RtlMoveMemory Obj2, pObj1, MPtr.SizeOf_LongPtr
 End Sub
 
-Public Function VTablePtr(Obj As Object) As LongPtr
-    RtlMoveMemory VTablePtr, ByVal ObjPtr(Obj), SizeOf_LongPtr
+Public Function VTablePtr(obj As Object) As LongPtr
+    RtlMoveMemory VTablePtr, ByVal ObjPtr(obj), SizeOf_LongPtr
 End Function
 
-Public Property Get ObjectAddressOf(Obj As Object, ByVal Index As Long) As LongPtr
-    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
+Public Property Get ObjectAddressOf(obj As Object, ByVal Index As Long) As LongPtr
+    Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
     RtlMoveMemory ObjectAddressOf, ByVal pVTable + (7 + Index) * SizeOf_LongPtr, SizeOf_LongPtr
 End Property
 
-Public Property Let ObjectAddressOf(Obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
-    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
+Public Property Let ObjectAddressOf(obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
+    Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
     RtlMoveMemory ByVal pVTable + (7 + Index) * SizeOf_LongPtr, Value, SizeOf_LongPtr
 End Property
 
@@ -678,13 +678,13 @@ End Function
 
 
 ' v ############################## v '         Math Functions       ' v ############################## v '
-Public Function Min(V1, V2)
-    If V1 < V2 Then Min = V1 Else Min = V2
-End Function
-
-Public Function Max(V1, V2)
-    If V1 > V2 Then Max = V1 Else Max = V2
-End Function
+'Public Function Min(V1, V2)
+'    If V1 < V2 Then Min = V1 Else Min = V2
+'End Function
+'
+'Public Function Max(V1, V2)
+'    If V1 > V2 Then Max = V1 Else Max = V2
+'End Function
 ' ^ ############################## ^ '         Math Functions       ' ^ ############################## ^ '
 
 ' v ############################## v '    MByteSwapper Functions   ' v ############################## v '
