@@ -240,7 +240,7 @@ Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.number = 0)
+    Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 
@@ -474,7 +474,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.compare(Obj2)
+    Col_CompareObj = Obj1.Compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
@@ -594,7 +594,7 @@ Public Function PtrToObject(ByVal p As LongPtr) As Object
     Set PtrToObject = obj: ZeroObject obj
 End Function
 
-Public Sub ZeroObject(obj As Object)
+Public Sub ZeroObject(ByVal obj As Object)
     'RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
     RtlZeroMemory obj, MPtr.SizeOf_LongPtr
 End Sub
@@ -606,16 +606,16 @@ Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
     RtlMoveMemory Obj2, pObj1, MPtr.SizeOf_LongPtr
 End Sub
 
-Public Function VTablePtr(obj As Object) As LongPtr
+Public Function VTablePtr(ByVal obj As Object) As LongPtr
     RtlMoveMemory VTablePtr, ByVal ObjPtr(obj), SizeOf_LongPtr
 End Function
 
-Public Property Get ObjectAddressOf(obj As Object, ByVal Index As Long) As LongPtr
+Public Property Get ObjectAddressOf(ByVal obj As Object, ByVal Index As Long) As LongPtr
     Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
     RtlMoveMemory ObjectAddressOf, ByVal pVTable + (7 + Index) * SizeOf_LongPtr, SizeOf_LongPtr
 End Property
 
-Public Property Let ObjectAddressOf(obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
+Public Property Let ObjectAddressOf(ByVal obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
     Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
     RtlMoveMemory ByVal pVTable + (7 + Index) * SizeOf_LongPtr, Value, SizeOf_LongPtr
 End Property
