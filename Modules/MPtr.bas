@@ -240,7 +240,7 @@ Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.Number = 0)
+    Col_Contains = (Err.number = 0)
     On Error GoTo 0
 End Function
 
@@ -254,7 +254,7 @@ End Function
 'End Function
 
 Public Function Col_AddKey(Col As Collection, obj As Object) As Object
-    Set Col_AddKey = obj:  Col.Add obj, obj.Key ' the object needs to have a Public Function Key As String
+    Set Col_AddKey = obj:  Col.Add obj, obj.Key ' the object needs to have a Public Function/PropertyGet Key As String
 End Function
 
 Public Function Col_AddOrGet(Col As Collection, obj As Object) As Object
@@ -361,11 +361,11 @@ End Sub
 
 ' The recursive data-independent QuickSort for primitive data-variables
 Private Sub Col_QuickSortVar(ByVal i1 As Long, ByVal i2 As Long)
-    Dim T As Long
+    Dim t As Long
     If i2 > i1 Then
-        T = Col_DivideVar(i1, i2)
-        Col_QuickSortVar i1, T - 1
-        Col_QuickSortVar T + 1, i2
+        t = Col_DivideVar(i1, i2)
+        Col_QuickSortVar i1, t - 1
+        Col_QuickSortVar t + 1, i2
     End If
 End Sub
 
@@ -402,11 +402,11 @@ End Sub
 
 ' The recursive data-independent QuickSort for strings
 Private Sub Col_QuickSortStr(ByVal i1 As Long, ByVal i2 As Long)
-    Dim T As Long
+    Dim t As Long
     If i1 < i2 Then
-        T = Col_DivideStr(i1, i2)
-        Col_QuickSortStr i1, T - 1
-        Col_QuickSortStr T + 1, i2
+        t = Col_DivideStr(i1, i2)
+        Col_QuickSortStr i1, t - 1
+        Col_QuickSortStr t + 1, i2
     End If
 End Sub
 
@@ -446,11 +446,11 @@ End Sub
 
 ' The recursive data-independent QuickSort for objects
 Private Sub Col_QuickSortObj(ByVal i1 As Long, ByVal i2 As Long)
-    Dim T As Long
+    Dim t As Long
     If i2 > i1 Then
-        T = Col_DivideObj(i1, i2)
-        Col_QuickSortObj i1, T - 1
-        Col_QuickSortObj T + 1, i2
+        t = Col_DivideObj(i1, i2)
+        Col_QuickSortObj i1, t - 1
+        Col_QuickSortObj t + 1, i2
     End If
 End Sub
 
@@ -474,7 +474,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.Compare(Obj2)
+    Col_CompareObj = Obj1.compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
@@ -969,3 +969,38 @@ End Sub
 
 ' ^ ############################## ^ '    CharPointer Functions   ' ^ ############################## ^ '
 
+' v ############################## v '      Random Functions      ' v ############################## v '
+Public Function RndInt8() As Integer
+    Randomize Timer
+    RndInt8 = CInt(Rnd * 255 - 128)
+End Function
+
+Public Function RndUInt8() As Byte
+    Randomize Timer
+    RndUInt8 = CByte(Rnd * 255)
+End Function
+
+Public Function RndInt16() As Integer
+    Randomize Timer
+    RndInt16 = CInt(Rnd * 65536 - 32768)
+End Function
+
+Public Function RndUInt16() As Long
+    Randomize Timer
+    RndUInt16 = CLng(Rnd * 65536)
+End Function
+
+Public Function RndInt32() As Long
+    Randomize Timer
+    RndInt32 = CLng(Rnd * 4294967296# - 2147483648#)
+End Function
+
+Public Function RndUInt32() 'As Decimal
+    Randomize Timer
+    RndUInt32 = CDec(Rnd * 4294967296#)
+End Function
+
+'Public Function RndInt64() 'As Decimal
+'    Randomize Timer
+'    RndInt64 = CLng(Rnd * CDec("18446744073709551614") - CDec("9223372036854775808"))
+'End Function
