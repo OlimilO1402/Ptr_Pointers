@@ -233,15 +233,16 @@ Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
     FncPtr = PFN
 End Function
 
-'Get the pointer of something
-'Public Property Get DeRef(ByVal ptr As LongPtr) As LongPtr
-'    RtlMoveMemory DeRef, ByVal ptr, SizeOf_LongPtr
-'End Property
+'Get the pointer of something with VarPtr
+'Public Property Get DeRef ?
 'the "Property Get" of "Property Let DeRef" would just be VarPtr()
 Public Property Let DeRef(ByVal Ptr As LongPtr, ByVal Value As LongPtr)
     RtlMoveMemory ByVal Ptr, Value, SizeOf_LongPtr
 End Property
-
+'use it like:
+'Dim V  As Long:     V = 123: MsgBox V
+'Dim pV As LongPtr: pV = VarPtr(V)
+'DeRef(pV) = 456: MsgBox V
 
 ' v ############################## v '    Collection Functions    ' v ############################## v '
 Public Function Col_Contains(Col As Collection, Key As String) As Boolean
