@@ -233,14 +233,24 @@ Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
     FncPtr = PFN
 End Function
 
+'Get the pointer of something
+'Public Property Get DeRef(ByVal ptr As LongPtr) As LongPtr
+'    RtlMoveMemory DeRef, ByVal ptr, SizeOf_LongPtr
+'End Property
+'the "Property Get" of "Property Let DeRef" would just be VarPtr()
+Public Property Let DeRef(ByVal Ptr As LongPtr, ByVal Value As LongPtr)
+    RtlMoveMemory ByVal Ptr, Value, SizeOf_LongPtr
+End Property
+
+
 ' v ############################## v '    Collection Functions    ' v ############################## v '
 Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     'for this Function all credits go to the incredible www.vb-tec.de alias Jost Schwider
-    'you can find the original version of this function here: https://vb-tec.de/collctns.htm
+    'you can find the original Version of this function here: https://vb-tec.de/collctns.htm
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.number = 0)
+    Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 
@@ -474,7 +484,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.compare(Obj2)
+    Col_CompareObj = Obj1.Compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)

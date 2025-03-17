@@ -5,7 +5,6 @@ Form=Forms\Form1.frm
 Form=Forms\Form2.frm
 Form=Forms\Form3.frm
 Form=Forms\Form4.frm
-Module=MCharPtr; Modules\MCharPtr.bas
 Module=MNew; Modules\MNew.bas
 Module=MPtr; Modules\MPtr.bas
 Class=Class1; Classes\Class1.cls

@@ -20,6 +20,14 @@ Begin VB.Form FMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnTestDeRef 
+      Caption         =   "Test DeRef"
+      Height          =   375
+      Left            =   2280
+      TabIndex        =   6
+      Top             =   120
+      Width           =   1815
+   End
    Begin VB.CommandButton BtnTestVBCollection 
       Caption         =   "Test VB.Collection"
       Height          =   375
@@ -114,4 +122,28 @@ Private Sub BtnTestVBCollection_Click()
     Form5.Show vbModal, Me
 End Sub
 
+Private Sub BtnTestDeRef_Click()
+    
+    Dim Value As Long: Value = 123456
+    MsgBox Value
+    
+    Dim pValue As LongPtr: pValue = VarPtr(Value)
+    
+    DeRef(pValue) = 456789
+    MsgBox Value
+    
+    TestDeRef1 Value
+    MsgBox Value
+    
+    TestDeRef2 pValue
+    MsgBox Value
+    
+End Sub
+
+Sub TestDeRef1(ByRef Value As Long)
+    Value = 321654
+End Sub
+Sub TestDeRef2(ByVal pValue As LongPtr)
+    DeRef(pValue) = 654987
+End Sub
 
