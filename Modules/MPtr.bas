@@ -63,14 +63,14 @@ Public Type TSafeArrayPtr
     pSA()  As TUDTPtr
 End Type
 
-Public Type VBGUID
-    Data1 As Long
-    Data2 As Integer
-    Data3 As Integer
-    Data4(0 To 7) As Byte
-End Type
-
-Public GUID_NULL As VBGUID
+'Public Type VBGuid
+'    Data1 As Long
+'    Data2 As Integer
+'    Data3 As Integer
+'    Data5(0 To 7) As Byte
+'End Type
+'
+'Public GUID_NULL As VBGuid
 
 Public Type TCharPointer
     pudt    As TUDTPtr
@@ -81,7 +81,7 @@ End Type
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
 #Else
-    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
+    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare Sub PutMemArr Lib "msvbvm60" Alias "PutMem4" (ByRef Dst As Any, ByVal src As LongPtr)
 #End If
 
@@ -154,7 +154,7 @@ End Type
 Public Type TByteSwapper
     pB      As TUDTPtr
     tmpByte As Byte
-    b()     As Byte
+    B()     As Byte
 End Type
 
 #If VBA7 Then
@@ -173,7 +173,7 @@ End Type
     Public Declare Sub SBO_Rotate4 Lib "SwapByteOrder" Alias "SwapByteOrder32" (ByRef Ptr As Any)
     Public Declare Sub SBO_Rotate8 Lib "SwapByteOrder" Alias "SwapByteOrder64" (ByRef Ptr As Any)
     Public Declare Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef Value() As Any) As Long
-    Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef arr() As Any, ByRef udtDescription() As Integer)
+    Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
     
 #End If
 Private m_Col As Collection
@@ -218,9 +218,9 @@ End Sub
 
 ' v ############################## v '    Array Functions   ' v ############################## v '
 
-Public Function Array_Count(arr, Optional nDim As Long = 1) As Long
+Public Function Array_Count(Arr, Optional nDim As Long = 1) As Long
 Try: On Error GoTo Catch
-    Array_Count = UBound(arr, nDim) - LBound(arr, nDim)
+    Array_Count = UBound(Arr, nDim) - LBound(Arr, nDim)
     Exit Function
 Catch:
     Array_Count = 0
@@ -372,11 +372,11 @@ End Sub
 
 ' The recursive data-independent QuickSort for primitive data-variables
 Private Sub Col_QuickSortVar(ByVal i1 As Long, ByVal i2 As Long)
-    Dim t As Long
+    Dim T As Long
     If i2 > i1 Then
-        t = Col_DivideVar(i1, i2)
-        Col_QuickSortVar i1, t - 1
-        Col_QuickSortVar t + 1, i2
+        T = Col_DivideVar(i1, i2)
+        Col_QuickSortVar i1, T - 1
+        Col_QuickSortVar T + 1, i2
     End If
 End Sub
 
@@ -413,11 +413,11 @@ End Sub
 
 ' The recursive data-independent QuickSort for strings
 Private Sub Col_QuickSortStr(ByVal i1 As Long, ByVal i2 As Long)
-    Dim t As Long
+    Dim T As Long
     If i1 < i2 Then
-        t = Col_DivideStr(i1, i2)
-        Col_QuickSortStr i1, t - 1
-        Col_QuickSortStr t + 1, i2
+        T = Col_DivideStr(i1, i2)
+        Col_QuickSortStr i1, T - 1
+        Col_QuickSortStr T + 1, i2
     End If
 End Sub
 
@@ -457,11 +457,11 @@ End Sub
 
 ' The recursive data-independent QuickSort for objects
 Private Sub Col_QuickSortObj(ByVal i1 As Long, ByVal i2 As Long)
-    Dim t As Long
+    Dim T As Long
     If i2 > i1 Then
-        t = Col_DivideObj(i1, i2)
-        Col_QuickSortObj i1, t - 1
-        Col_QuickSortObj t + 1, i2
+        T = Col_DivideObj(i1, i2)
+        Col_QuickSortObj i1, T - 1
+        Col_QuickSortObj T + 1, i2
     End If
 End Sub
 
@@ -485,7 +485,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.Compare(Obj2)
+    Col_CompareObj = Obj1.compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
@@ -705,7 +705,7 @@ Public Sub New_ByteSwapper(this As TByteSwapper, Optional ByVal CountBytes As Lo
     With this
         New_UDTPtr .pB, FADF_EMBEDDED Or FADF_STATIC, 1, CountBytes
         'Call PutMem4(ByVal ArrPtr(.b), .pB.pSA)
-        SAPtr(ArrPtr(.b)) = .pB.pSA
+        SAPtr(ArrPtr(.B)) = .pB.pSA
     End With
 End Sub
 
@@ -715,47 +715,47 @@ End Sub
 
 Public Sub ByteSwapper_Delete(this As TByteSwapper)
     ' deletes the pointer in the array of the TByteSwapper-structurr
-    ZeroSAPtr ByVal ArrPtr(this.b)
+    ZeroSAPtr ByVal ArrPtr(this.B)
 End Sub
 
 Public Sub Rotate2(this As TByteSwapper)
     ' swaps 2 bytes
     With this
-        .tmpByte = .b(0)
-        .b(0) = .b(1)
-        .b(1) = .tmpByte
+        .tmpByte = .B(0)
+        .B(0) = .B(1)
+        .B(1) = .tmpByte
     End With
 End Sub
 Public Sub Rotate4(this As TByteSwapper)
     ' swaps 4 bytes
     With this
-        .tmpByte = .b(0)
-        .b(0) = .b(3)
-        .b(3) = .tmpByte
+        .tmpByte = .B(0)
+        .B(0) = .B(3)
+        .B(3) = .tmpByte
         
-        .tmpByte = .b(1)
-        .b(1) = .b(2)
-        .b(2) = .tmpByte
+        .tmpByte = .B(1)
+        .B(1) = .B(2)
+        .B(2) = .tmpByte
     End With
 End Sub
 Public Sub Rotate8(this As TByteSwapper)
     ' swaps 8 bytes
     With this
-        .tmpByte = .b(0)
-        .b(0) = .b(7)
-        .b(7) = .tmpByte
+        .tmpByte = .B(0)
+        .B(0) = .B(7)
+        .B(7) = .tmpByte
         
-        .tmpByte = .b(1)
-        .b(1) = .b(6)
-        .b(6) = .tmpByte
+        .tmpByte = .B(1)
+        .B(1) = .B(6)
+        .B(6) = .tmpByte
         
-        .tmpByte = .b(2)
-        .b(2) = .b(5)
-        .b(5) = .tmpByte
+        .tmpByte = .B(2)
+        .B(2) = .B(5)
+        .B(5) = .tmpByte
         
-        .tmpByte = .b(3)
-        .b(3) = .b(4)
-        .b(4) = .tmpByte
+        .tmpByte = .B(3)
+        .B(3) = .B(4)
+        .B(4) = .tmpByte
     End With
 End Sub
 Public Sub Rotate(this As TByteSwapper)
@@ -763,33 +763,33 @@ Public Sub Rotate(this As TByteSwapper)
     With this
         Select Case .pB.cElements
         Case 2
-            .tmpByte = .b(0)
-            .b(0) = .b(1)
-            .b(1) = .tmpByte
+            .tmpByte = .B(0)
+            .B(0) = .B(1)
+            .B(1) = .tmpByte
         Case 4
-            .tmpByte = .b(0)
-            .b(0) = .b(3)
-            .b(3) = .tmpByte
+            .tmpByte = .B(0)
+            .B(0) = .B(3)
+            .B(3) = .tmpByte
             
-            .tmpByte = .b(1)
-            .b(1) = .b(2)
-            .b(2) = .tmpByte
+            .tmpByte = .B(1)
+            .B(1) = .B(2)
+            .B(2) = .tmpByte
         Case 8
-            .tmpByte = .b(0)
-            .b(0) = .b(7)
-            .b(7) = .tmpByte
+            .tmpByte = .B(0)
+            .B(0) = .B(7)
+            .B(7) = .tmpByte
             
-            .tmpByte = .b(1)
-            .b(1) = .b(6)
-            .b(6) = .tmpByte
+            .tmpByte = .B(1)
+            .B(1) = .B(6)
+            .B(6) = .tmpByte
             
-            .tmpByte = .b(2)
-            .b(2) = .b(5)
-            .b(5) = .tmpByte
+            .tmpByte = .B(2)
+            .B(2) = .B(5)
+            .B(5) = .tmpByte
             
-            .tmpByte = .b(3)
-            .b(3) = .b(4)
-            .b(4) = .tmpByte
+            .tmpByte = .B(3)
+            .B(3) = .B(4)
+            .B(4) = .tmpByte
         End Select
     End With
 End Sub
@@ -823,39 +823,39 @@ Public Sub RotateArray(this As TByteSwapper, vArr)
             Case 2
                 For i = lb To ub
                     .pB.pvData = .pB.pvData + 2
-                    .tmpByte = .b(0)
-                    .b(0) = .b(1)
-                    .b(1) = .tmpByte
+                    .tmpByte = .B(0)
+                    .B(0) = .B(1)
+                    .B(1) = .tmpByte
                 Next
             Case 4
                 For i = lb To ub
                     .pB.pvData = .pB.pvData + 4
-                    .tmpByte = .b(0)
-                    .b(0) = .b(3)
-                    .b(3) = .tmpByte
+                    .tmpByte = .B(0)
+                    .B(0) = .B(3)
+                    .B(3) = .tmpByte
                     
-                    .tmpByte = .b(1)
-                    .b(1) = .b(2)
-                    .b(2) = .tmpByte
+                    .tmpByte = .B(1)
+                    .B(1) = .B(2)
+                    .B(2) = .tmpByte
                 Next
             Case 8
                 For i = lb To ub
                     .pB.pvData = .pB.pvData + 8
-                    .tmpByte = .b(0)
-                    .b(0) = .b(7)
-                    .b(7) = .tmpByte
+                    .tmpByte = .B(0)
+                    .B(0) = .B(7)
+                    .B(7) = .tmpByte
                     
-                    .tmpByte = .b(1)
-                    .b(1) = .b(6)
-                    .b(6) = .tmpByte
+                    .tmpByte = .B(1)
+                    .B(1) = .B(6)
+                    .B(6) = .tmpByte
                     
-                    .tmpByte = .b(2)
-                    .b(2) = .b(5)
-                    .b(5) = .tmpByte
+                    .tmpByte = .B(2)
+                    .B(2) = .B(5)
+                    .B(5) = .tmpByte
                     
-                    .tmpByte = .b(3)
-                    .b(3) = .b(4)
-                    .b(4) = .tmpByte
+                    .tmpByte = .B(3)
+                    .B(3) = .B(4)
+                    .B(4) = .tmpByte
                 Next
             End Select
         End With
@@ -902,33 +902,33 @@ Public Sub RotateUDTArray(this As TByteSwapper, _
                 .pB.cElements = Abs(ValLength)
                 Select Case ValLength
                 Case 2
-                    .tmpByte = .b(0)
-                    .b(0) = .b(1)
-                    .b(1) = .tmpByte
+                    .tmpByte = .B(0)
+                    .B(0) = .B(1)
+                    .B(1) = .tmpByte
                 Case 4
-                    .tmpByte = .b(0)
-                    .b(0) = .b(3)
-                    .b(3) = .tmpByte
+                    .tmpByte = .B(0)
+                    .B(0) = .B(3)
+                    .B(3) = .tmpByte
                     
-                    .tmpByte = .b(1)
-                    .b(1) = .b(2)
-                    .b(2) = .tmpByte
+                    .tmpByte = .B(1)
+                    .B(1) = .B(2)
+                    .B(2) = .tmpByte
                 Case 8
-                    .tmpByte = .b(0)
-                    .b(0) = .b(7)
-                    .b(7) = .tmpByte
+                    .tmpByte = .B(0)
+                    .B(0) = .B(7)
+                    .B(7) = .tmpByte
                     
-                    .tmpByte = .b(1)
-                    .b(1) = .b(6)
-                    .b(6) = .tmpByte
+                    .tmpByte = .B(1)
+                    .B(1) = .B(6)
+                    .B(6) = .tmpByte
                     
-                    .tmpByte = .b(2)
-                    .b(2) = .b(5)
-                    .b(5) = .tmpByte
+                    .tmpByte = .B(2)
+                    .B(2) = .B(5)
+                    .B(5) = .tmpByte
                     
-                    .tmpByte = .b(3)
-                    .b(3) = .b(4)
-                    .b(4) = .tmpByte
+                    .tmpByte = .B(3)
+                    .B(3) = .B(4)
+                    .B(4) = .tmpByte
                 End Select
                 .pB.pvData = .pB.pvData + .pB.cElements 'Abs(ValLength)
             Next
@@ -949,9 +949,9 @@ Public Sub String_Rotate2(s As String)
     Dim i As Long
     'With bs
         For i = 0 To Len(s)
-            bs.tmpByte = bs.b(0)
-            bs.b(0) = bs.b(1)
-            bs.b(1) = bs.tmpByte
+            bs.tmpByte = bs.B(0)
+            bs.B(0) = bs.B(1)
+            bs.B(1) = bs.tmpByte
             bs.pB.pvData = bs.pB.pvData + 2
         Next
     'End With
