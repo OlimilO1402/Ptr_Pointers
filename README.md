@@ -14,7 +14,8 @@ The Module MPtr is used in many repos. It contains
 * all GetMem/PutMem declarations
 * every function for working with SafeArray-pointers
 * Collection-functions including collection sorting
-* the TByteSwapper-structure all byteswapping-and SwapByteOrder-functions [SwapByteOrder](https://www.activevb.de/rubriken/komponenten/dll31/dll31_neu.html)
 * weak obj-pointer functions
+* the TByteSwapper-structure all byteswapping-and SwapByteOrder-functions 
+[SwapByteOrder](https://www.activevb.de/rubriken/komponenten/dll31/dll31_neu.html) is a dll by the incredible Kai Liebenau he published at ActiveVB.de in august 2008.
 
 ![VBPointers Image](Resources/VBPointers.png "VBPointers Image")
