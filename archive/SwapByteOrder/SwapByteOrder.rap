@@ -1,0 +1,121 @@
+[Project]
+Assembler=masm
+Type=Dll Project
+Description=SwapByteOrder
+Backup=$P\Bak\
+Group=1
+GroupExpand=1
+Debug=0
+[Files]
+1=SwapByteOrder.Asm
+2=SwapByteOrder.rc
+3=SwapByteOrder.Def
+4=
+[MakeFiles]
+0=SwapByteOrder.rap
+1=SwapByteOrder.rc
+2=SwapByteOrder.asm
+3=SwapByteOrder.obj
+4=SwapByteOrder.res
+5=SwapByteOrder.exe
+6=SwapByteOrder.def
+7=SwapByteOrder.dll
+8=SwapByteOrder.txt
+9=SwapByteOrder.lib
+10=SwapByteOrder.mak
+11=SwapByteOrder.hla
+12=SwapByteOrder.com
+13=SwapByteOrder.ocx
+14=SwapByteOrder.idl
+15=SwapByteOrder.tlb
+16=SwapByteOrder.sys
+[MakeDef]
+Menu=1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
+1=4,O,$B\RC.EXE /v,1
+2=3,O,$B\ML.EXE /c /coff /Cp /nologo /I"$I",2
+3=7,O,$B\LINK.EXE /SUBSYSTEM:WINDOWS /DLL /DEF:$6 /LIBPATH:"$L" /OUT:"$7",3,4
+4=0,0,,5
+5=rsrc.obj,O,$B\CVTRES.EXE,rsrc.res
+6=*.obj,O,$B\ML.EXE /c /coff /Cp /nologo /I"$I",*.asm
+7=0,0,"$E\OllyDbg",5
+11=4,O,$B\RC.EXE /v,1
+12=3,O,$B\ML.EXE /Zd /Zi /c /coff /Cp /nologo /I"$I",2
+13=7,O,$B\LINK.EXE /SUBSYSTEM:WINDOWS /DEBUG /DLL /DEF:$6 /LIBPATH:"$L" /OUT:"$7",3
+14=0,0,,5
+15=rsrc.obj,O,$B\CVTRES.EXE,rsrc.res
+16=*.obj,O,$B\ML.EXE /c /coff /Cp /nologo /I"$I",*.asm
+17=0,0,"$E\OllyDbg",5
+[Resource]
+[StringTable]
+[VerInf]
+[Group]
+Group=Added files,Assembly,Resources,Misc,Modules
+1=2
+2=1
+3=4
+4=
+[Size]
+4=0,0,0,0,0
+2=0,0,0,0,609
+1=0,0,0,0,223
+3=0,0,0,0,112
+[Collapse]
+2=
+4=
+1=680
+3=
+[VersionControl]
+Settings=1246
+Milestones=129
+MilestoneEvery=10
+MilestoneEveryCurrent=0
+MilestoneOnBuild=0.0.0.0
+MilestoneOnTime=2
+MilestoneOnDate=0
+MilestoneOnDateWhen=1
+MilestoneOnDateStatus=0
+MilestoneOnDateDate=22
+MilestoneOnDateTimeYear=2008
+MilestoneOnDateTimeMonth=8
+MilestoneOnDateTimeDate=7
+MilestoneOnDateTimeHour=16
+MilestoneOnDateTimeMin=0
+MilestoneOnDateTimeSec=44
+MilestoneOnDateTimeStatus=0
+BackupLocation=E:\Programme\RadASM\Masm\Projects\VCBackups\
+CompressionLevel=0
+DefaultComment=Project $N, $Z, Backup Created On $D At $T.
+ExcludeExt1=\
+ExcludeExt2=\
+ExcludeExt3=\
+ExcludeExt4=\
+FileVerLength=4
+FileVer2Range=0
+FileVer3Range=0
+FileVer4Range=0
+ProductVerLength=4
+ProductVer2Range=0
+ProductVer3Range=0
+ProductVer4Range=0
+[Colref]
+0=00FFFFFF
+1=00FFFFFF
+2=00FFFFFF
+3=00FFFFFF
+4=00FFFFFF
+5=00FFFFFF
+6=00FFFFFF
+7=00FFFFFF
+[BookMark]
+0=
+1=
+2=
+3=
+4=
+5=
+6=
+7=
+8=
+9=
+[BreakPoint]
+0=

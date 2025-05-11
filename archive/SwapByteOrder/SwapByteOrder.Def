@@ -1,0 +1,7 @@
+LIBRARY      "SwapByteOrder.DLL"
+
+EXPORTS
+	SwapByteOrder16
+	SwapByteOrder32
+	SwapByteOrder64
+	SwapByteOrderArray
