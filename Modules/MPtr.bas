@@ -81,7 +81,7 @@ End Type
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
 #Else
-    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef arr() As Any, ByRef value As LongPtr) 'same as ArrPtr
+    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare Sub PutMemArr Lib "msvbvm60" Alias "PutMem4" (ByRef Dst As Any, ByVal src As LongPtr)
 #End If
 
@@ -172,7 +172,7 @@ End Type
     Public Declare Sub SBO_Rotate2 Lib "SwapByteOrder" Alias "SwapByteOrder16" (ByRef Ptr As Any)
     Public Declare Sub SBO_Rotate4 Lib "SwapByteOrder" Alias "SwapByteOrder32" (ByRef Ptr As Any)
     Public Declare Sub SBO_Rotate8 Lib "SwapByteOrder" Alias "SwapByteOrder64" (ByRef Ptr As Any)
-    Public Declare Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef value() As Any) As Long
+    Public Declare Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef Value() As Any) As Long
     Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef arr() As Any, ByRef udtDescription() As Integer)
     
 #End If
@@ -236,8 +236,8 @@ End Function
 'Get the pointer of something with VarPtr
 'Public Property Get DeRef ?
 'the "Property Get" of "Property Let DeRef" would just be VarPtr()
-Public Property Let DeRef(ByVal Ptr As LongPtr, ByVal value As LongPtr)
-    RtlMoveMemory ByVal Ptr, value, SizeOf_LongPtr
+Public Property Let DeRef(ByVal Ptr As LongPtr, ByVal Value As LongPtr)
+    RtlMoveMemory ByVal Ptr, Value, SizeOf_LongPtr
 End Property
 'use it like:
 'Dim V  As Long:     V = 123: MsgBox V
@@ -251,12 +251,12 @@ Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     On Error Resume Next
 '  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.number = 0)
+    Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 
-Public Function Col_Add(Col As Collection, obj As Object) As Object
-    Set Col_Add = obj:  Col.Add obj
+Public Function Col_Add(Col As Collection, Obj As Object) As Object
+    Set Col_Add = Obj:  Col.Add Obj
 End Function
 
 'Public Function Col_Add(Col As Collection, Value)
@@ -264,56 +264,89 @@ End Function
 '    Col_AddV = Value:   Col.Add Value
 'End Function
 
-Public Function Col_AddKey(Col As Collection, obj As Object) As Object
-    Set Col_AddKey = obj:  Col.Add obj, obj.Key ' the object needs to have a Public Function/PropertyGet Key As String
+Public Function Col_AddKey(Col As Collection, Obj As Object) As Object
+    Set Col_AddKey = Obj:  Col.Add Obj, Obj.Key ' the object needs to have a Public Function/PropertyGet Key As String
 End Function
 
-Public Function Col_AddOrGet(Col As Collection, obj As Object) As Object
-    Dim Key As String: Key = obj.Key ' the object needs to have a Public Function Key As String
+Public Function Col_AddOrGet(Col As Collection, Obj As Object) As Object
+    Dim Key As String: Key = Obj.Key ' the object needs to have a Public Function/PropertyGet Key As String
     If Col_Contains(Col, Key) Then
         Set Col_AddOrGet = Col.Item(Key)
     Else
-        Set Col_AddOrGet = obj
-        Col.Add obj, Key
+        Set Col_AddOrGet = Obj
+        Col.Add Obj, Key
     End If
 End Function
 
-Public Function Col_TryAddObject(Col As Collection, obj As Object, ByVal Key As String) As Boolean
+Public Function Col_TryAddObject(Col As Collection, Obj As Object, ByVal Key As String) As Boolean
 Try: On Error GoTo Catch
-    Col.Add obj, Key
+    Col.Add Obj, Key
     Col_TryAddObject = True
 Catch: On Error GoTo 0
 End Function
 
-Public Sub Col_Remove(Col As Collection, obj As Object)
+Public Sub Col_Remove(Col As Collection, Obj As Object)
     Dim o As Object
     For Each o In Col
-        If o.IsSame(obj) Then 'Obj needs Public Function IsSame(other) As Boolean
-            If Col_Contains(Col, obj.Key) Then Col.Remove obj.Key 'Obj needs Public Property Key As String
+        If o.IsSame(Obj) Then 'Obj needs Public Function IsSame(other) As Boolean
+            If Col_Contains(Col, Obj.Key) Then Col.Remove Obj.Key 'Obj needs Public Property Key As String
         End If
     Next
 End Sub
 
-Public Sub Col_SwapItems(Col As Collection, ByVal i1 As Long, i2 As Long)
+Public Sub Col_SwapItems(Col As Collection, ByVal i1 As Long, ByVal i2 As Long)
     Dim c As Long: c = Col.Count
     If c = 0 Then Exit Sub
     If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
     If i1 <= 0 Or c <= i1 Then Exit Sub
     If i2 <= 0 Or c < i2 Then Exit Sub
     If i1 = i2 Then Exit Sub
-    Dim Obj1, Obj2
-    If IsObject(Col.Item(i1)) Then Set Obj1 = Col.Item(i1) Else Obj1 = Col.Item(i1)
-    If IsObject(Col.Item(i2)) Then Set Obj2 = Col.Item(i2) Else Obj2 = Col.Item(i2)
+    Dim Obj1: If IsObject(Col.Item(i1)) Then Set Obj1 = Col.Item(i1) Else Obj1 = Col.Item(i1)
+    Dim Obj2: If IsObject(Col.Item(i2)) Then Set Obj2 = Col.Item(i2) Else Obj2 = Col.Item(i2)
     Col.Remove i1: Col.Add Obj2, , i1:     Col.Remove i2
     If i2 < c Then Col.Add Obj1, , i2 Else Col.Add Obj1
+End Sub
+
+Public Sub Col_SwapItemsKey(Col As Collection, ByVal i1 As Long, ByVal Key1 As String, _
+                                               ByVal i2 As Long, ByVal Key2 As String)
+    Dim c As Long: c = Col.Count
+    If c = 0 Then Exit Sub
+    If i2 < i1 Then: Dim i_tmp As Long: i_tmp = i1: i1 = i2: i2 = i_tmp
+    If i1 <= 0 Or c <= i1 Then Exit Sub
+    If i2 <= 0 Or c < i2 Then Exit Sub
+    If i1 = i2 Then Exit Sub
+    Dim Obj1: If IsObject(Col.Item(Key1)) Then Set Obj1 = Col.Item(Key1) Else Obj1 = Col.Item(Key1)
+    Dim Obj2: If IsObject(Col.Item(Key2)) Then Set Obj2 = Col.Item(Key2) Else Obj2 = Col.Item(Key2)
+    Col.Remove Key2: Col.Add Obj2, Key2, i1
+    Col.Remove Key1: Col.Add Obj1, Key1, i1
 End Sub
 
 Public Sub Col_MoveUp(Col As Collection, ByVal i As Long)
     Col_SwapItems Col, i, i - 1
 End Sub
 
+Public Sub Col_MoveUpKey(Col As Collection, ByVal i As Long)
+    Dim i1 As Long: i1 = i
+    Dim i2 As Long: i2 = i - 1
+    Dim Obj1 As Object: Set Obj1 = Col.Item(i1)
+    Dim Obj2 As Object: Set Obj2 = Col.Item(i2)
+    Dim Key1 As String: Key1 = Obj1.Key
+    Dim Key2 As String: Key2 = Obj2.Key
+    Col_SwapItemsKey Col, i1, Key1, i2, Key2
+End Sub
+
 Public Sub Col_MoveDown(Col As Collection, ByVal i As Long)
     Col_SwapItems Col, i, i + 1
+End Sub
+
+Public Sub Col_MoveDownKey(Col As Collection, ByVal i As Long)
+    Dim i1 As Long: i1 = i
+    Dim i2 As Long: i2 = i + 1
+    Dim Obj1 As Object: Set Obj1 = Col.Item(i1)
+    Dim Obj2 As Object: Set Obj2 = Col.Item(i2)
+    Dim Key1 As String: Key1 = Obj1.Key
+    Dim Key2 As String: Key2 = Obj2.Key
+    Col_SwapItemsKey Col, i1, Key1, i2, Key2
 End Sub
 
 Public Sub Col_ToListBox(Col As Collection, aLB As ListBox, Optional ByVal addEmptyLineFirst As Boolean = False, Optional ByVal doPtrToItemData As Boolean = False)
@@ -328,7 +361,7 @@ Public Sub Col_ToListCtrl(Col As Collection, ComboBoxOrListBox, Optional ByVal a
     If Col Is Nothing Then Exit Sub
     Dim i As Long, c As Long: c = Col.Count: If c = 0 Then Exit Sub
     Dim vt As VbVarType: vt = VarType(Col.Item(1))
-    Dim v, obj As Object
+    Dim v, Obj As Object
     With ComboBoxOrListBox
         If .ListCount Then .Clear
         If addEmptyLineFirst Then .AddItem vbNullString
@@ -339,9 +372,10 @@ Public Sub Col_ToListCtrl(Col As Collection, ComboBoxOrListBox, Optional ByVal a
             Next
         Case vbObject
             For i = 1 To c
-                Set obj = Col.Item(i)
-                .AddItem obj.ToStr ' the object needs to have a Public Function ToStr As String
-                If doPtrToItemData Then .ItemData(i - 1) = obj.Ptr ' and a Public Function Ptr As LongPtr
+                Set Obj = Col.Item(i)
+                .AddItem Obj.ToStr ' the object needs to have a Public Function ToStr As String
+                If doPtrToItemData Then .ItemData(i - 1) = Obj.Ptr ': Debug.Print Obj.Ptr ' and a Public Function Ptr As LongPtr
+                ' ItemData can only be of type Long no String
             Next
         End Select
     End With
@@ -500,7 +534,13 @@ End Sub
 
 ' ^ ############################## ^ '    Collection Functions    ' ^ ############################## ^ '
 
+' v ' ############################## ' ^ '    Collection&ListBox/ComboBox-Functions    ' v ############################## v '
+Public Function ColLB_Add(Obj As Object) As Object
 
+End Function
+
+
+' ^ ' ############################## ' ^ '    Collection&ListBox/ComboBox-Functions    ' ^ ############################## ^ '
 
 
 ' v ############################## v '    UDTPtr Functions   ' v ############################## v '
@@ -601,13 +641,13 @@ End Function
 ' v ############################## v '  Object-WeakPtr Funcs  ' v ############################## v '
 
 Public Function PtrToObject(ByVal p As LongPtr) As Object
-    Dim obj As IUnknown:  RtlMoveMemory obj, p, MPtr.SizeOf_LongPtr
-    Set PtrToObject = obj: ZeroObject obj
+    Dim Obj As IUnknown:  RtlMoveMemory Obj, p, MPtr.SizeOf_LongPtr
+    Set PtrToObject = Obj: ZeroObject Obj
 End Function
 
-Public Sub ZeroObject(ByVal obj As Object)
+Public Sub ZeroObject(ByVal Obj As Object)
     'RtlZeroMemory ByVal VarPtr(obj), MPtr.SizeOf_LongPtr
-    RtlZeroMemory obj, MPtr.SizeOf_LongPtr
+    RtlZeroMemory Obj, MPtr.SizeOf_LongPtr
 End Sub
 
 Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
@@ -617,18 +657,18 @@ Public Sub AssignSwap(Obj1 As IUnknown, Obj2 As IUnknown)
     RtlMoveMemory Obj2, pObj1, MPtr.SizeOf_LongPtr
 End Sub
 
-Public Function VTablePtr(ByVal obj As Object) As LongPtr
-    RtlMoveMemory VTablePtr, ByVal ObjPtr(obj), SizeOf_LongPtr
+Public Function VTablePtr(ByVal Obj As Object) As LongPtr
+    RtlMoveMemory VTablePtr, ByVal ObjPtr(Obj), SizeOf_LongPtr
 End Function
 
-Public Property Get ObjectAddressOf(ByVal obj As Object, ByVal Index As Long) As LongPtr
-    Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
+Public Property Get ObjectAddressOf(ByVal Obj As Object, ByVal Index As Long) As LongPtr
+    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
     RtlMoveMemory ObjectAddressOf, ByVal pVTable + (7 + Index) * SizeOf_LongPtr, SizeOf_LongPtr
 End Property
 
-Public Property Let ObjectAddressOf(ByVal obj As Object, ByVal Index As Long, ByVal value As LongPtr)
-    Dim pVTable As LongPtr: pVTable = VTablePtr(obj) 'first DeRef
-    RtlMoveMemory ByVal pVTable + (7 + Index) * SizeOf_LongPtr, value, SizeOf_LongPtr
+Public Property Let ObjectAddressOf(ByVal Obj As Object, ByVal Index As Long, ByVal Value As LongPtr)
+    Dim pVTable As LongPtr: pVTable = VTablePtr(Obj) 'first DeRef
+    RtlMoveMemory ByVal pVTable + (7 + Index) * SizeOf_LongPtr, Value, SizeOf_LongPtr
 End Property
 
 ' ^ ############################## ^ '  Object-WeakPtr Funcs  ' ^ ############################## ^ '
@@ -650,12 +690,12 @@ Public Sub SafeArrayPtr_Delete(this As TSafeArrayPtr)
     ZeroSAPtr ByVal ArrPtr(this.pSA)
 End Sub
 
-Public Property Let SafeArrayPtr_SAPtr(this As TSafeArrayPtr, ByVal value As LongPtr)
+Public Property Let SafeArrayPtr_SAPtr(this As TSafeArrayPtr, ByVal Value As LongPtr)
     ' writes the pointer to a SafeArrayDescriptor-structure into a
     ' TSafeArrayPtr-lightweight-object
     Dim p As LongPtr
     'GetMem4 ByVal Value, p
-    RtlMoveMemory p, ByVal value, SizeOf_LongPtr
+    RtlMoveMemory p, ByVal Value, SizeOf_LongPtr
     
     this.pSAPtr.pvData = p - 2 * SizeOf_LongPtr
     ' -8 ist Mist
