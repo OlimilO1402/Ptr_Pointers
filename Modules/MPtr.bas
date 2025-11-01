@@ -246,12 +246,12 @@ End Property
 
 ' v ############################## v '    Collection Functions    ' v ############################## v '
 Public Function Col_Contains(Col As Collection, Key As String) As Boolean
-    'for this Function all credits go to the incredible www.vb-tec.de alias Jost Schwider
-    'you can find the original Version of this function here: https://vb-tec.de/collctns.htm
+    'for this function all credits go to the incredible www.vb-tec.de alias Jost Schwider
+    'you can find the original version of the function "IsInCollection" here: https://vb-tec.de/collctns.htm
     On Error Resume Next
-'  '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
+    '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.Number = 0)
+    Col_Contains = (Err.number = 0)
     On Error GoTo 0
 End Function
 
@@ -292,6 +292,31 @@ Public Sub Col_Remove(Col As Collection, Obj As Object)
             If Col_Contains(Col, Obj.Key) Then Col.Remove Obj.Key 'Obj needs Public Property Key As String
         End If
     Next
+End Sub
+
+Public Function Col_IndexFromObject(Col As Collection, Obj As Object) As Long
+    Dim i As Long, v, o As Object
+    For Each v In Col
+        Set o = v
+        If o.Key = Obj.Key Then
+            Col_IndexFromObject = i
+            Exit Function
+        End If
+        i = i + 1
+    Next
+End Function
+
+Public Sub Col_ChangeKey(Col As Collection, OldIndexKey, NewKey As String)
+    'for this function all credits go to the incredible www.vb-tec.de alias Jost Schwider
+    'you can find the original version of the function "CollectionChangeKey" here: https://vb-tec.de/collctns.htm
+    Dim Value As Variant
+    If IsObject(Col(OldIndexKey)) Then
+        Set Value = Col.Item(OldIndexKey)
+    Else
+        Value = Col.Item(OldIndexKey)
+    End If
+    Col.Add Value, NewKey  'first add
+    Col.Remove OldIndexKey 'then remove
 End Sub
 
 Public Sub Col_SwapItems(Col As Collection, ByVal i1 As Long, ByVal i2 As Long)
@@ -382,7 +407,9 @@ Public Sub Col_ToListCtrl(Col As Collection, ComboBoxOrListBox, Optional ByVal a
 End Sub
 
 Public Property Get Col_ObjectFromListCtrl(Col As Collection, ComboBoxOrListBox, i_out As Long) As Object
-    i_out = ComboBoxOrListBox.ListIndex
+    Dim li As Long: li = ComboBoxOrListBox.ListIndex
+    If i_out < 0 Then i_out = li
+    'i_out = IIf(li < 0, i_out, li)
     If i_out < 0 Then Exit Property
     Dim Key As String: Key = ComboBoxOrListBox.ItemData(i_out)
     If Col_Contains(Col, Key) Then Set Col_ObjectFromListCtrl = Col.Item(Key)
@@ -404,6 +431,19 @@ Public Sub Col_Sort(Col As Collection)
     Set m_Col = Nothing
 End Sub
 
+Public Function Col_ToStr(Col As Collection) As String
+    Dim s As String, v, o As Object
+    For Each v In Col
+        If IsObject(v) Then
+            Set o = v
+            s = s & o.ToStr & vbCrLf
+        Else
+            s = s & CStr(v) & vbCrLf
+        End If
+    Next
+    Col_ToStr = s
+End Function
+    
 ' The recursive data-independent QuickSort for primitive data-variables
 Private Sub Col_QuickSortVar(ByVal i1 As Long, ByVal i2 As Long)
     Dim t As Long
