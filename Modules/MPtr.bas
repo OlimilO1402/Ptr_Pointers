@@ -347,10 +347,14 @@ Public Sub Col_SwapItemsKey(Col As Collection, ByVal i1 As Long, ByVal Key1 As S
 End Sub
 
 Public Sub Col_MoveUp(Col As Collection, ByVal i As Long)
+    Dim c As Long: c = Col.Count
+    If i <= 1 Or c < i Then Exit Sub
     Col_SwapItems Col, i, i - 1
 End Sub
 
 Public Sub Col_MoveUpKey(Col As Collection, ByVal i As Long)
+    Dim c As Long: c = Col.Count
+    If i <= 1 Or c < i Then Exit Sub
     Dim i1 As Long: i1 = i
     Dim i2 As Long: i2 = i - 1
     Dim Obj1 As Object: Set Obj1 = Col.Item(i1)
@@ -361,10 +365,14 @@ Public Sub Col_MoveUpKey(Col As Collection, ByVal i As Long)
 End Sub
 
 Public Sub Col_MoveDown(Col As Collection, ByVal i As Long)
+    Dim c As Long: c = Col.Count
+    If i < 1 Or c <= i Then Exit Sub
     Col_SwapItems Col, i, i + 1
 End Sub
 
 Public Sub Col_MoveDownKey(Col As Collection, ByVal i As Long)
+    Dim c As Long: c = Col.Count
+    If i < 1 Or c <= i Then Exit Sub
     Dim i1 As Long: i1 = i
     Dim i2 As Long: i2 = i + 1
     Dim Obj1 As Object: Set Obj1 = Col.Item(i1)
