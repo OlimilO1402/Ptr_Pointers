@@ -21,11 +21,11 @@ Public Enum SAFeature
     FADF_RESERVED = &HF008  ' Bits reserved for future use.
 End Enum
 
-'#If VBA7 = 0 Then
+#If VBA7 = 0 Then
     Public Enum LongPtr
         [_]
     End Enum
-'#End If
+#End If
 '#If Win64 = 0 Then
 '    Public Enum LongLong
 '        [_]
@@ -81,7 +81,7 @@ End Type
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
 #Else
-    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
+    Public Declare Sub GetMemArr Lib "msvbvm60" Alias "GetMem4" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare Sub PutMemArr Lib "msvbvm60" Alias "PutMem4" (ByRef Dst As Any, ByVal src As LongPtr)
 #End If
 
@@ -173,7 +173,7 @@ End Type
     Public Declare Sub SBO_Rotate4 Lib "SwapByteOrder" Alias "SwapByteOrder32" (ByRef Ptr As Any)
     Public Declare Sub SBO_Rotate8 Lib "SwapByteOrder" Alias "SwapByteOrder64" (ByRef Ptr As Any)
     Public Declare Function SBO_RotateArray Lib "SwapByteOrder" Alias "SwapByteOrderArray" (ByRef Value() As Any) As Long
-    Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef arr() As Any, ByRef udtDescription() As Integer)
+    Public Declare Sub SBO_RotateUDTArray Lib "SwapByteOrder" Alias "SwapByteOrderUDTArray" (ByRef Arr() As Any, ByRef udtDescription() As Integer)
     
 #End If
 Private m_Col As Collection
@@ -218,12 +218,43 @@ End Sub
 
 ' v ############################## v '    Array Functions   ' v ############################## v '
 
-Public Function Array_Count(arr, Optional nDim As Long = 1) As Long
+Public Function Array_Count(Arr, Optional nDim As Long = 1) As Long
 Try: On Error GoTo Catch
-    Array_Count = UBound(arr, nDim) - LBound(arr, nDim)
+    Array_Count = UBound(Arr, nDim) - LBound(Arr, nDim)
     Exit Function
 Catch:
     Array_Count = 0
+End Function
+
+'does not work:
+'Public ArrSng() As Single '... ArrSng = Array(1, 2, 3)
+'this function does:
+'ArrSng = ArrayT(vbSingle, 1!, 2!, 3!)
+Public Function ArrayT(Of_T As VbVarType, ParamArray Arr())
+    Dim i As Long, u As Long: u = UBound(Arr)
+    Select Case Of_T
+    Case VbVarType.vbByte:      ReDim ArrayOfByt(0 To UBound(Arr)) As Byte
+                                For i = 0 To u: ArrayOfByt(i) = CByte(Arr(i)): Next
+                                ArrayT = ArrayOfByt: Exit Function
+    Case VbVarType.vbInteger:   ReDim ArrayOfInt(0 To u) As Integer
+                                For i = 0 To u: ArrayOfInt(i) = CInt(Arr(i)): Next
+                                ArrayT = ArrayOfInt: Exit Function
+    Case VbVarType.vbLong:      ReDim ArrayOfLng(0 To u) As Long
+                                For i = 0 To u: ArrayOfLng(i) = CLng(Arr(i)): Next
+                                ArrayT = ArrayOfLng: Exit Function
+    Case VbVarType.vbSingle:    ReDim ArrayOfSng(0 To u) As Single
+                                For i = 0 To u: ArrayOfSng(i) = CSng(Arr(i)): Next
+                                ArrayT = ArrayOfSng: Exit Function
+    Case VbVarType.vbDouble:    ReDim ArrayOfDbl(0 To u) As Double
+                                For i = 0 To u: ArrayOfDbl(i) = CDbl(Arr(i)): Next
+                                ArrayT = ArrayOfDbl: Exit Function
+    Case VbVarType.vbCurrency:  ReDim ArrayOfCur(0 To u) As Currency
+                                For i = 0 To u: ArrayOfCur(i) = CCur(Arr(i)): Next
+                                ArrayT = ArrayOfCur: Exit Function
+    Case VbVarType.vbDecimal:   ReDim ArrayOfDec(0 To u) As Variant
+                                For i = 0 To u: ArrayOfDec(i) = CDec(Arr(i)): Next
+                                ArrayT = ArrayOfDec: Exit Function
+    End Select
 End Function
 
 ' ^ ############################## ^ '    Array Functions    ' ^ ############################## ^ '
@@ -251,7 +282,7 @@ Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     On Error Resume Next
     '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.number = 0)
+    Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 
@@ -567,7 +598,7 @@ End Function
 Private Function Col_CompareObj(ByVal i1 As Long, ByVal i2 As Long) As Long
     Dim Obj1 As Object: Set Obj1 = m_Col.Item(i1)
     Dim Obj2 As Object: Set Obj2 = m_Col.Item(i2)
-    Col_CompareObj = Obj1.compare(Obj2)
+    Col_CompareObj = Obj1.Compare(Obj2)
 End Function
 
 Private Sub Col_SwapObj(ByVal i1 As Long, ByVal i2 As Long)
