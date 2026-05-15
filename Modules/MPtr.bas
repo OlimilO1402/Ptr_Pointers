@@ -34,12 +34,14 @@ End Enum
 
 Public LongPtr_Empty As LongPtr
 
-#If win64 Then
+#If Win64 Then
     Public Const SizeOf_LongPtr As Long = 8
     Public Const SizeOf_Variant As Long = 20
+    Public Const IDE_ADDROF_REL As Long = 55
 #Else
     Public Const SizeOf_LongPtr As Long = 4
     Public Const SizeOf_Variant As Long = 16
+    Public Const IDE_ADDROF_REL As Long = 22
 #End If
 
 ' https://learn.microsoft.com/en-us/windows/win32/api/oaidl/ns-oaidl-safearray
@@ -77,7 +79,7 @@ Public Type TCharPointer
     Chars() As Integer
 End Type
 
-#If win64 Then
+#If Win64 Then
     Public Declare PtrSafe Sub GetMemArr Lib "msvbvm60" Alias "GetMem8" (ByRef Arr() As Any, ByRef Value As LongPtr) 'same as ArrPtr
     Public Declare PtrSafe Sub PutMemArr Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As LongPtr)
 #Else
@@ -99,7 +101,7 @@ End Type
     Public Declare PtrSafe Sub PutMem8 Lib "msvbvm60" (ByRef Dst As Any, ByVal Src As Currency)
     Public Declare PtrSafe Sub PutMemDbl Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As Double)
     Public Declare PtrSafe Sub PutMemDat Lib "msvbvm60" Alias "PutMem8" (ByRef Dst As Any, ByVal Src As Date)
-    #If win64 Then
+    #If Win64 Then
         Public Declare PtrSafe Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As LongLong)
         Public Declare PtrSafe Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)
         Public Declare PtrSafe Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As LongLong)
@@ -112,6 +114,7 @@ End Type
         'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
         Public Declare PtrSafe Function RtlCompareMemory Lib "kernel32" (ByRef pSrc0 As Any, ByRef pSrc1 As Any, ByVal BytLen As Long) as Long
     #End If
+    Private Declare PtrSafe Function IsBadCodePtr Lib "kernel32" (ByVal lpfn As LongPtr) As Long
     Public Declare PtrSafe Function ArrPtr Lib "msvbvm60" Alias "VarPtr" (ByRef pArr() As Any) As LongPtr
 #Else
     'GetMem and PutMem are copying memory just like RtlMoveMemory but only for a certain amount of bytes
@@ -132,7 +135,10 @@ End Type
     Public Declare Sub RtlMoveMemory Lib "kernel32" (ByRef pDst As Any, ByRef pSrc As Any, ByVal BytLen As Long)
     Public Declare Sub RtlZeroMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long)
     Public Declare Sub RtlFillMemory Lib "kernel32" (ByRef pDst As Any, ByVal BytLen As Long)
-    
+    'https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-isbadcodeptr
+    'BOOL IsBadCodePtr( [in] FARPROC lpfn );
+    Private Declare Function IsBadCodePtr Lib "kernel32" (ByVal lpfn As LongPtr) As Long
+
     'https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-rtlcomparememory
     Public Declare Function RtlCompareMemory Lib "ntdll" (ByRef pSrc1 As Any, ByRef pSrc2 As Any, ByVal BytLen As Long) As Long ' NTSYSAPI
     'RtlCompareMemory returns the number of bytes in the two blocks that match. If all bytes match up to the specified Length value, the Length value is returned.
@@ -258,10 +264,27 @@ Public Function ArrayT(Of_T As VbVarType, ParamArray Arr())
 End Function
 
 ' ^ ############################## ^ '    Array Functions    ' ^ ############################## ^ '
+Public Function FncPtrStub(ByVal pFunction As LongPtr) As LongPtr
+    FncPtrStub = pFunction
+End Function
 
 'retrieve the pointer to a function by using FncPtr(Addressof myfunction)
-Public Function FncPtr(ByVal PFN As LongPtr) As LongPtr
-    FncPtr = PFN
+'thanks to Arne => AVB !Tipp0715!
+Public Function FncPtr(ByVal pFunction As LongPtr) As LongPtr
+    FncPtr = pFunction
+    If Not IsInIDE() Then Exit Function
+    ' Wird das Programm in der VB-IDE gestartet, befindet sich der eigentliche Zeiger auf eine Funktion
+    ' bei (AddressOf X) + 22, AddressOf X selber zeigt nur auf einen Stub. (getestet mit VB 6)
+    RtlMoveMemory FncPtr, ByVal pFunction + IDE_ADDROF_REL, SizeOf_LongPtr
+    If IsBadCodePtr(FncPtr) Then FncPtr = pFunction
+End Function
+
+' http://www.activevb.de/tipps/vb6tipps/tipp0347.html
+Public Function IsInIDE() As Boolean
+Try: On Error GoTo Catch
+    Debug.Print 1 / 0
+    Exit Function
+Catch: IsInIDE = True
 End Function
 
 'Get the pointer of something with VarPtr
@@ -282,7 +305,7 @@ Public Function Col_Contains(Col As Collection, Key As String) As Boolean
     On Error Resume Next
     '"Extras->Optionen->Allgemein->Unterbrechen bei Fehlern->Bei nicht verarbeiteten Fehlern"
     If IsEmpty(Col(Key)) Then: 'DoNothing
-    Col_Contains = (Err.number = 0)
+    Col_Contains = (Err.Number = 0)
     On Error GoTo 0
 End Function
 

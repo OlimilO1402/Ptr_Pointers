@@ -84,7 +84,7 @@ Begin VB.Form Form5
       Height          =   11580
       Left            =   2520
       TabIndex        =   0
-      Top             =   120
+      Top             =   0
       Width           =   3135
    End
 End

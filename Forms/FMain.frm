@@ -20,6 +20,14 @@ Begin VB.Form FMain
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   304
    StartUpPosition =   3  'Windows-Standard
+   Begin VB.CommandButton BtnTestFncPtr 
+      Caption         =   "Test FncPtr"
+      Height          =   375
+      Left            =   2280
+      TabIndex        =   7
+      Top             =   600
+      Width           =   1815
+   End
    Begin VB.CommandButton BtnTestDeRef 
       Caption         =   "Test DeRef"
       Height          =   375
@@ -83,6 +91,10 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
+
+Private Sub BtnTestFncPtr_Click()
+    
+End Sub
 
 Private Sub Form_Load()
     Me.Caption = "VBPointers v" & App.Major & "." & App.Minor & "." & App.Revision
